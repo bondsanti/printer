@@ -23266,10 +23266,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   icon: "error",
                   title: "Error",
                   text: _context2.t0.response.data.message
-                }).then(function () {
-                  setTimeout(function () {
-                    location.reload(); // รีโหลดหน้าเว็บ
-                  }, 200);
                 });
 
               case 19:

@@ -239,10 +239,6 @@ const uploadData = async () => {
             icon: "error",
             title: "Error",
             text: error.response.data.message,
-        }).then(() => {
-            setTimeout(() => {
-                location.reload(); // รีโหลดหน้าเว็บ
-            }, 200);
         });
     } finally {
         progress.value = null;
