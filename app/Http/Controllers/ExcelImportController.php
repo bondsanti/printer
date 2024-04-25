@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LogPrinter;
 use App\Imports\LogImport;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
@@ -34,34 +35,18 @@ class ExcelImportController extends Controller
     public function getData(Request $request)
     {
         $currentYear = Carbon::now()->year;
-        $data = LogPrinter::whereYear('date', $currentYear)->orderByDesc('id')->take(1000)->get();
+
+        //$users = User::with('dep')->take(10)->get();
+
+        $data = LogPrinter::with(['user_ref:code,name_th,name_eng'])
+        ->whereYear('date', $currentYear)
+        ->orderByDesc('id')
+        ->take(1000)->get();
 
         return response()->json(['data' => $data]);
     }
 
 
-    // public function getBarChartbyYear(Request $request)
-    // {
-
-    //     $currentYear = Carbon::now()->year;
-    //     $query = LogPrinter::whereYear('date', $currentYear)->where('jobstatus', 'Done');
-
-    //     if ($request->has('printers')) {
-    //         $printers = $request->printers;
-    //         $query->whereIn('printername', $printers);
-    //     }
-
-    //     $data = $query->select(
-    //         DB::raw('MONTH(date) as month'),
-    //         DB::raw('SUM(total_color) as total_color'),
-    //         DB::raw('SUM(total_bw) as total_bw')
-    //     )
-    //         ->groupBy(DB::raw('MONTH(date)'))
-    //         ->orderBy('month')
-    //         ->get();
-
-    //     return response()->json(['data' => $data]);
-    // }
     public function getBarChartbyYear(Request $request)
     {
         $currentYear = Carbon::now()->year;

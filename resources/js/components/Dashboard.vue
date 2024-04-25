@@ -77,7 +77,7 @@
                                             {{ item.code_user }}
                                         </td>
                                         <td class="text-left">
-                                            {{ item.username }}
+                                            {{ item.user_ref ? item.user_ref.name_eng  : '-' }}
                                         </td>
                                         <td class="text-center">
                                             {{ item.total_color }}
@@ -196,6 +196,7 @@ onMounted(async () => {
         const response = await axios.get("/api/data");
         isLoading.value = false;
         items.value = response.data.data;
+        console.log(items.value);
     } catch (error) {
         console.error(error);
     }

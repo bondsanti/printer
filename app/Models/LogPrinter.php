@@ -9,11 +9,16 @@ class LogPrinter extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql';
+    protected $connection = 'mysql_report';
     protected $table = 'log_printer_fuji';
 
     protected $fillable = [
         'id', 'printername', 'date', 'time', 'jobtype','pc_name', 'code_user','username', 'filename', 'jobstatus','jobnumber','total_color','total_bw',
 
     ];
+
+    public function user_ref()
+    {
+        return $this->belongsTo(User::class, 'code_user', 'code');
+    }
 }
