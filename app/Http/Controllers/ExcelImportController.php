@@ -38,19 +38,19 @@ class ExcelImportController extends Controller
 
         //$users = User::with('dep')->take(10)->get();
 
-        $data = LogPrinter::with(['user_ref:code,name_th,name_eng'])
-        ->whereYear('date', $currentYear)
-        ->orderByDesc('id')
-        ->take(1000)->get();
+        $data = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
+            ->wherein('jobtype', ['Print', 'Copy'])
+            ->whereYear('date', $currentYear)
+            ->orderByDesc('id')
+            ->take(1000)->get();
 
         return response()->json(['data' => $data]);
     }
 
-
     public function getBarChartbyYear(Request $request)
     {
         $currentYear = Carbon::now()->year;
-        $query = LogPrinter::whereYear('date', $currentYear)->where('jobstatus', 'Done');
+        $query = LogPrinter::whereYear('date', $currentYear)->where('jobstatus', 'Done')->wherein('jobtype', ['Print', 'Copy']);
 
         if ($request->has('printers')) {
             $printers = $request->printers;
@@ -66,6 +66,9 @@ class ExcelImportController extends Controller
             ->orderBy('month')
             ->get();
 
+        $data->each(function ($item) {
+            $item->total = $item->total_color + $item->total_bw;
+        });
         // สร้างข้อมูลสำหรับเดือนที่ไม่มีข้อมูลโดยให้ค่าเป็น 0
         $monthsWithData = $data->pluck('month')->toArray();
         $months = range(1, 12);
@@ -75,7 +78,8 @@ class ExcelImportController extends Controller
             $data->push([
                 'month' => $missingMonth,
                 'total_color' => 0,
-                'total_bw' => 0
+                'total_bw' => 0,
+                'total' => 0
             ]);
         }
 
@@ -85,46 +89,102 @@ class ExcelImportController extends Controller
         return response()->json(['data' => $data]);
     }
 
-
-    public function getPieChartbyYear(Request $request)
+    public function getBarChartbyYearWithDep(Request $request)
     {
         $currentYear = Carbon::now()->year;
-        $query = LogPrinter::whereYear('date', $currentYear)->where('jobstatus', 'Done');
-
-
-        $data = $query->select(
-            'username',
-            DB::raw('SUM(total_color) as total_color'),
-            DB::raw('SUM(total_bw) as total_bw')
-        )
-            ->groupBy('username')
-            ->get();
-
-
-        return response()->json(['data' => $data]);
-    }
-
-    public function getBarChartbyYearwithUser(Request $request)
-    {
-        $currentYear = Carbon::now()->year;
-        $query = LogPrinter::whereYear('date', $currentYear)->where('jobstatus', 'Done');
+        $query = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id','user_ref.dep_ref:id,name'])
+            ->whereYear('date', $currentYear)->where('jobstatus', 'Done')->wherein('jobtype', ['Print', 'Copy']);
 
         if ($request->has('printers')) {
             $printers = $request->printers;
             $query->whereIn('printername', $printers);
         }
 
-        $data = $query->select(
-            'username',
-            DB::raw('SUM(total_color) as total_color'),
-            DB::raw('SUM(total_bw) as total_bw'),
-            DB::raw('MONTH(date) as month')
-        )
-            ->groupBy('username', DB::raw('MONTH(date)'))
-            ->orderBy('month')
-            ->take(10) // เลือกเฉพาะ 5 รายการแรก
-            ->get();
+        $data = $query->get();
+        $data->each(function ($item) {
+            $item->total = $item->total_color + $item->total_bw;
+        });
+
+        $departmentSums = $data->groupBy('user_ref.department_id')->map(function ($items, $departmentId) {
+            $departmentName = $items->first()['user_ref']['dep_ref']['name'] ?? '-'; // ให้ค่าเป็น "-" ถ้า dep_ref มีค่าเป็น null
+            return [
+                'department_id' => $departmentId,
+                'department_name' => $departmentName,
+                'total_color' => $items->sum('total_color'),
+                'total_bw' => $items->sum('total_bw'),
+                'total' => $items->sum('total')
+            ];
+        })->values();
+
+        return response()->json(['data' => $departmentSums]);
+
+        // $currentYear = Carbon::now()->year;
+        // $data = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
+        //     ->whereYear('date', $currentYear)
+        //     ->where('jobstatus', 'Done')
+        //     ->get();
+
+        // $departmentSums = $data->groupBy(function ($item) {
+        //     return Carbon::parse($item->date)->month;
+        // })->map(function ($items, $month) {
+        //     $departmentSums = $items->groupBy('user_ref.department_id')->map(function ($deptItems, $departmentId) {
+        //         $departmentName = $deptItems->first()['user_ref']['dep_ref']['name'] ?? '-'; // ให้ค่าเป็น "-" ถ้า dep_ref มีค่าเป็น null
+        //         return [
+        //             'department_id' => $departmentId,
+        //             'department_name' => $departmentName,
+        //             'total_color' => $deptItems->sum('total_color'),
+        //             'total_bw' => $deptItems->sum('total_bw')
+        //         ];
+        //     })->values();
+
+        //     return [
+        //         'month' => $month,
+        //         'department_sums' => $departmentSums
+        //     ];
+        // })->values();
+
+        // return response()->json(['data' => $departmentSums]);
+    }
+
+    public function getPieChartbyYearWithPrinter(Request $request)
+    {
+        $currentYear = Carbon::now()->year;
+        $query = LogPrinter::whereYear('date', $currentYear)->where('jobstatus', 'Done')->whereIn('jobtype', ['Print', 'Copy']);
+
+        // ตรวจสอบว่ามีการเลือก total_bw หรือ total_color หรือไม่
+        $selectedColors = $request->colors ?? [];
+        $hasTotalBW = in_array('total_bw', $selectedColors);
+        $hasTotalColor = in_array('total_color', $selectedColors);
+
+        if ($hasTotalBW && !$hasTotalColor) {
+            // ถ้าเลือก total_bw เท่านั้น
+            $query->select(
+                DB::raw('printername as printer'),
+                DB::raw('SUM(total_bw) as total'),
+            );
+        } elseif ($hasTotalColor && !$hasTotalBW) {
+            // ถ้าเลือก total_color เท่านั้น
+            $query->select(
+                DB::raw('printername as printer'),
+                DB::raw('SUM(total_color) as total'),
+            );
+        } elseif ($hasTotalBW && $hasTotalColor) {
+            // ถ้าเลือกทั้ง total_bw และ total_color
+            $query->select(
+                DB::raw('printername as printer'),
+                DB::raw('SUM(total_color + total_bw) as total'),
+            );
+        } else {
+            // ถ้าไม่เลือกเลยหรือเลือกเฉพาะ total_bw เท่านั้น
+            $query->select(
+                DB::raw('printername as printer'),
+                DB::raw('0 as total'),
+            );
+        }
+
+        $data = $query->groupBy('printername')->get();
 
         return response()->json(['data' => $data]);
     }
+
 }

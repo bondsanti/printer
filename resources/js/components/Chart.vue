@@ -31,33 +31,61 @@
                         >
                     </div>
                 </div>
-                <div class="">
-                <canvas
-                    ref="chartCanvas"
-                ></canvas>
-            </div>
+                <div
+                    id="chart-container"
+                    style="min-width: 310px; height: 400px; margin: 0 auto"
+                ></div>
             </div>
         </div>
     </div>
     <div class="col-12 col-md-6">
         <div class="card">
             <div class="card-body text-center">
-                <h5 class="card-title">..</h5>
-
+                <h5 class="card-title">ปริมาณการใช้งานรวมแต่ละแผนก</h5>
+                <div class="form-check form-check-inline">
+                    <div class="form-check form-check-inline">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="fuji24"
+                            v-model="selectedPrinters2"
+                            value="Fuji24"
+                            @change="filterDataBar2"
+                        />
+                        <label class="form-check-label" for="fuji24"
+                            >Fuji24</label
+                        >
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="fuji25"
+                            v-model="selectedPrinters2"
+                            value="Fuji25"
+                            @change="filterDataBar2"
+                        />
+                        <label class="form-check-label" for="fuji25"
+                            >Fuji25</label
+                        >
+                    </div>
+                </div>
+                <div
+                    id="chart-container2"
+                    style="min-width: 310px; height: 400px; margin: 0 auto"
+                ></div>
             </div>
-
         </div>
     </div>
 </template>
-
 <script setup>
 import { ref, onMounted } from "vue";
-import Chart from "chart.js/auto";
+import Highcharts from "highcharts";
+import Highcharts2 from "highcharts";
 import axios from "axios";
 
-const chartCanvas = ref(null);
-const chart = ref(null);
 const selectedPrinters = ref(["Fuji24", "Fuji25"]);
+const selectedPrinters2 = ref(["Fuji24", "Fuji25"]);
 
 const thaiMonths = {
     1: "มกราคม",
@@ -75,14 +103,15 @@ const thaiMonths = {
 };
 
 onMounted(async () => {
-    await Promise.all([fetchDataAndRenderChart()]);
+    await fetchDataAndRenderChart();
+    await fetchDataAndRenderChart2();
 });
 
 async function fetchDataAndRenderChart() {
     try {
         const response = await axios.get("/api/data/chart", {
             params: {
-                printers: selectedPrinters.value, // ส่งเครื่องพิมพ์ที่เลือกไปให้ API
+                printers: selectedPrinters.value,
             },
         });
         const data = response.data.data;
@@ -92,54 +121,220 @@ async function fetchDataAndRenderChart() {
     }
 }
 
-function renderChart(data) {
-    if (chart.value) {
-        chart.value.destroy();
-    }
-
-    const thaiMonthsLabels = data.map((item) => thaiMonths[item.month]);
-    const totalColors = data.map((item) => item.total_color);
-    const totalBW = data.map((item) => item.total_bw);
-
-    // bar chart
-    chart.value = new Chart(chartCanvas.value.getContext("2d"), {
-        type: "bar",
-        data: {
-            labels: thaiMonthsLabels,
-            datasets: [
-                {
-                    label: "Total Color",
-                    data: totalColors,
-                    backgroundColor: "rgba(255, 99, 132, 0.2)",
-                    borderColor: "rgba(255, 99, 132, 1)",
-                    borderWidth: 1,
-                },
-                {
-                    label: "Total BW",
-                    data: totalBW,
-                    backgroundColor: "rgba(54, 162, 235, 0.2)",
-                    borderColor: "rgba(54, 162, 235, 1)",
-                    borderWidth: 1,
-                },
-            ],
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                },
+async function fetchDataAndRenderChart2() {
+    try {
+        const response = await axios.get("/api/data/chart/dep", {
+            params: {
+                printers: selectedPrinters2.value,
             },
+        });
+        const data = response.data.data;
+        renderChart2(data);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
+
+function renderChart(data) {
+    if (Highcharts.value) {
+        Highcharts.value.destroy();
+    }
+    const thaiMonthsLabels = data.map((item) => thaiMonths[item.month]);
+    const totalColors = data.map((item) => parseInt(item.total_color));
+    const totalBW = data.map((item) => parseInt(item.total_bw));
+    const total = data.map((item) => parseInt(item.total));
+    // console.log(thaiMonthsLabels);
+    // console.log(totalColors);
+    Highcharts.chart("chart-container", {
+        chart: {
+            type: "column",
+        },
+        title: {
+            text: "",
+        },
+        xAxis: {
+            categories: thaiMonthsLabels,
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: "Total Usage",
+            },
+        },
+        plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y}'
+                }
+            }
+        },
+        series: [
+            {
+                name: "Total Color",
+                data: totalColors,
+            },
+            {
+                name: "Total BW",
+                data: totalBW,
+            },
+            {
+                name: "Total",
+                data: total,
+            },
+        ],
+        exporting: {
+            enabled: true,
         },
     });
 }
 
+// function renderChart2(data) {
+//     if (Highcharts.value) {
+//         Highcharts.value.destroy();
+//     }
+//     const departmentNames = data.map((item) => item.department_name);
+//     const totalColors = data.map((item) => parseInt(item.total_color));
+//     const totalBW = data.map((item) => parseInt(item.total_bw));
+
+//     // console.log(thaiMonthsLabels);
+//     // console.log(totalColors);
+//     Highcharts.chart("chart-container2", {
+//         chart: {
+//             type: "pie",
+//         },
+//         tooltip: {
+//             valueSuffix: "%",
+//         },
+//         plotOptions: {
+//             series: {
+//                 allowPointSelect: true,
+//                 cursor: "pointer",
+//                 dataLabels: [
+//                     {
+//                         enabled: true,
+//                         distance: 20,
+//                     },
+//                     {
+//                         enabled: true,
+//                         distance: -40,
+//                         format: "{point.percentage:.1f}%",
+//                         style: {
+//                             fontSize: "1.2em",
+//                             textOutline: "none",
+//                             opacity: 0.7,
+//                         },
+//                         filter: {
+//                             operator: ">",
+//                             property: "percentage",
+//                             value: 10,
+//                         },
+//                     },
+//                 ],
+//             },
+//         },
+//         series: [
+//             {
+//                 name: "Percentage",
+//                 colorByPoint: true,
+//                 // data: [
+//                 //     {
+//                 //         name: departmentNames,
+//                 //         y: totalColors,
+//                 //     },
+
+//                 //     {
+//                 //         name: "Carbohydrates",
+//                 //         y: 1.09,
+//                 //     },
+//                 //     {
+//                 //         name: "Protein",
+//                 //         y: 15.5,
+//                 //     },
+//                 //     {
+//                 //         name: "Ash",
+//                 //         y: 1.68,
+//                 //     },
+//                 // ],
+//                 data: data.map(item => ({
+//         name: item.department_name,
+//         y: parseInt(item.total_color)
+//     }))
+//             },
+//         ],
+//     });
+// }
+
+function renderChart2(data) {
+    if (Highcharts2.value) {
+        Highcharts2.value.destroy();
+    }
+
+    // const departmentNames = data.map((item) => item.department_name);
+    // const totalColors = data.map((item) => parseInt(item.total_color));
+    // const totalBW = data.map((item) => parseInt(item.total_bw));
+    // const total = data.map((item) => parseInt(item.total));
+
+    // เรียงลำดับข้อมูลตาม total
+    const sortedData = data.slice().sort((a, b) => b.total - a.total);
+
+    const sortedDepartmentNames = sortedData.map((item) => item.department_name);
+    const sortedTotalColors = sortedData.map((item) => parseInt(item.total_color));
+    const sortedTotalBW = sortedData.map((item) => parseInt(item.total_bw));
+    const sortedTotal = sortedData.map((item) => parseInt(item.total));
+
+    Highcharts2.chart("chart-container2", {
+        chart: {
+            type: "column",
+        },
+        title: {
+            text: "",
+        },
+        xAxis: {
+            categories: sortedDepartmentNames,
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: "Total Usage",
+            },
+        },
+        plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y}'
+                }
+            }
+        },
+        series: [
+            {
+                name: "Total Color",
+                data: sortedTotalColors,
+            },
+            {
+                name: "Total BW",
+                data: sortedTotalBW,
+            },
+            {
+                name: "Total",
+                data: sortedTotal,
+            },
+        ],
+        exporting: {
+            enabled: true,
+        },
+    });
+}
+
+
 async function filterDataBar() {
     await fetchDataAndRenderChart();
 }
-</script>
-<style>
-.chart-container {
-    height:40vh;
-  width:80vw;
+
+async function filterDataBar2() {
+    await fetchDataAndRenderChart2();
 }
-</style>
+</script>

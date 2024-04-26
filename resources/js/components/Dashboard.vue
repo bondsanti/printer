@@ -1,11 +1,13 @@
 <template>
     <div class="mt-3">
-        <!-- <div class="row mb-3">
-            <InfoCard></InfoCard>
-        </div> -->
         <div class="row mb-3">
             <Chart></Chart>
         </div>
+        <div class="row mb-3">
+            <ChartPie></ChartPie>
+        </div>
+
+
         <div class="row">
             <div class="col-12">
                 <div class="card border-info">
@@ -184,6 +186,7 @@ import Swal from "sweetalert2";
 import Loading from "../components/Loading.vue";
 import InfoCard from "../components/InfoCard.vue";
 import Chart from "../components/Chart.vue";
+import ChartPie from "../components/ChartPie.vue";
 
 const items = ref([]);
 const progress = ref(0);
@@ -196,7 +199,7 @@ onMounted(async () => {
         const response = await axios.get("/api/data");
         isLoading.value = false;
         items.value = response.data.data;
-        console.log(items.value);
+        //console.log(items.value);
     } catch (error) {
         console.error(error);
     }

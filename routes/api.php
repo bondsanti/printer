@@ -22,6 +22,5 @@ use Illuminate\Support\Facades\Route;
 Route::post('/import-excel', [ExcelImportController::class, 'import']);
 Route::get('/data', [ExcelImportController::class, 'getData']);
 Route::get('/data/chart', [ExcelImportController::class, 'getBarChartbyYear']);
-Route::get('/data/piechart', [ExcelImportController::class, 'getPieChartbyYear']);
-Route::get('/data/chart/users', [ExcelImportController::class, 'getBarChartbyYearwithUser']);
-
+Route::get('/data/chart/dep', [ExcelImportController::class, 'getBarChartbyYearWithDep']);
+Route::get('/data/chartpie', [ExcelImportController::class, 'getPieChartbyYearWithPrinter']);

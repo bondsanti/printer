@@ -26,6 +26,8 @@
     "dependencies": {
         "chart.js": "^4.4.2",
         "datatables.net-bs5": "^2.0.5",
+        "highcharts": "^11.4.1",
+        "highcharts-vue": "^2.0.1",
         "sweetalert2": "^11.10.8",
         "vue-router": "^4.0.13"
     }

@@ -21,4 +21,9 @@ class LogPrinter extends Model
     {
         return $this->belongsTo(User::class, 'code_user', 'code');
     }
+
+    public function dep_ref()
+    {
+        return $this->belongsTo(Department::class, 'department_id','id');
+    }
 }

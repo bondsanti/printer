@@ -1,7 +1,8 @@
 require('./bootstrap');
 
 import {createApp} from 'vue';
-import App from './components/App.vue';
 import router from './router';
+import App from './components/App.vue';
+import HighchartsVue from 'highcharts-vue'
 
-createApp(App).use(router).mount('#appvue');
+createApp(App).use(router).use(HighchartsVue).mount('#appvue');

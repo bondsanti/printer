@@ -12,7 +12,7 @@ class User extends Model
     protected $table = 'users';
 
 
-    public function dep()
+    public function dep_ref()
     {
         return $this->hasOne(Department::class, 'id', 'department_id');
     }
