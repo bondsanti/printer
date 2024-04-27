@@ -13,7 +13,7 @@ use Carbon\Carbon;
 
 class ExcelImportController extends Controller
 {
-    public function import(Request $request)
+    public function importData(Request $request)
     {
 
         if ($request->hasFile('excel_file')) {
@@ -36,15 +36,13 @@ class ExcelImportController extends Controller
     {
         $currentYear = Carbon::now()->year;
 
-        //$users = User::with('dep')->take(10)->get();
-
         $data = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
             ->wherein('jobtype', ['Print', 'Copy'])
             ->whereYear('date', $currentYear)
             ->orderByDesc('id')
-            ->take(1000)->get();
+            ->take(300)->get();
 
-        return response()->json(['data' => $data]);
+        return response()->json(['data' => $data],200);
     }
 
     public function getBarChartbyYear(Request $request)
@@ -86,7 +84,7 @@ class ExcelImportController extends Controller
         // เรียงข้อมูลตามเดือน
         $data = $data->sortBy('month')->values();
 
-        return response()->json(['data' => $data]);
+        return response()->json(['data' => $data],200);
     }
 
     public function getBarChartbyYearWithDep(Request $request)
@@ -116,34 +114,8 @@ class ExcelImportController extends Controller
             ];
         })->values();
 
-        return response()->json(['data' => $departmentSums]);
+        return response()->json(['data' => $departmentSums],200);
 
-        // $currentYear = Carbon::now()->year;
-        // $data = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
-        //     ->whereYear('date', $currentYear)
-        //     ->where('jobstatus', 'Done')
-        //     ->get();
-
-        // $departmentSums = $data->groupBy(function ($item) {
-        //     return Carbon::parse($item->date)->month;
-        // })->map(function ($items, $month) {
-        //     $departmentSums = $items->groupBy('user_ref.department_id')->map(function ($deptItems, $departmentId) {
-        //         $departmentName = $deptItems->first()['user_ref']['dep_ref']['name'] ?? '-'; // ให้ค่าเป็น "-" ถ้า dep_ref มีค่าเป็น null
-        //         return [
-        //             'department_id' => $departmentId,
-        //             'department_name' => $departmentName,
-        //             'total_color' => $deptItems->sum('total_color'),
-        //             'total_bw' => $deptItems->sum('total_bw')
-        //         ];
-        //     })->values();
-
-        //     return [
-        //         'month' => $month,
-        //         'department_sums' => $departmentSums
-        //     ];
-        // })->values();
-
-        // return response()->json(['data' => $departmentSums]);
     }
 
     public function getPieChartbyYearWithPrinter(Request $request)
@@ -184,7 +156,38 @@ class ExcelImportController extends Controller
 
         $data = $query->groupBy('printername')->get();
 
-        return response()->json(['data' => $data]);
+        return response()->json(['data' => $data],200);
+    }
+
+    public function getSimiDonutChartbyYearWithUser(Request $request)
+    {
+        $currentYear = Carbon::now()->year;
+        $query = LogPrinter::with(['user_ref:code,name_th,name_eng'])
+            ->whereYear('date', $currentYear)->where('jobstatus', 'Done')->wherein('jobtype', ['Print', 'Copy']);
+
+        if ($request->has('printers')) {
+            $printers = $request->printers;
+            $query->whereIn('printername', $printers);
+        }
+
+        $data = $query->get();
+
+        $data->each(function ($item) {
+            $item->total = $item->total_color + $item->total_bw;
+        });
+
+        $UserSums = $data->groupBy('user_ref.code')->map(function ($items, $code) {
+            $UserName = $items->first()['user_ref']['name_eng'] ?? $items->first()['username']; // ให้ค่าเป็น "-" ถ้า user_ref มีค่าเป็น null
+            return [
+                'code' => $code,
+                'user' => $UserName,
+                // 'total_color' => $items->sum('total_color'),
+                // 'total_bw' => $items->sum('total_bw'),
+                'total' => $items->sum('total')
+            ];
+        })->sortByDesc('total')->take(10)->values();
+
+        return response()->json(['data' => $UserSums],200);
     }
 
 }

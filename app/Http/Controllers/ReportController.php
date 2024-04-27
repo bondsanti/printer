@@ -1,0 +1,249 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\LogPrinter;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+
+class ReportController extends Controller
+{
+    // public function getData(Request $request){
+
+    //     $query = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
+    //     ->where('jobstatus', 'Done')->wherein('jobtype', ['Print', 'Copy']);
+    //     if ($request->has('startDate') && $request->has('endDate')) {
+    //         $startDate = date('Y-m-d', strtotime($request->startDate));
+    //         $endDate = date('Y-m-d', strtotime($request->endDate));
+    //         $query->whereBetween('date', [$startDate, $endDate]);
+    //     }
+    //    // $sql = $query->toSql();
+    //     $data = $query->get();
+    //     $data->each(function ($item) {
+    //         $item->total = $item->total_color + $item->total_bw;
+    //     });
+    //     $departmentSums = $data->groupBy('user_ref.department_id')->map(function ($items, $departmentId) {
+    //         $departmentName = $items->first()['user_ref']['dep_ref']['name'] ?? 'Other'; // ให้ค่าเป็น "-" ถ้า dep_ref มีค่าเป็น null
+    //         return [
+    //             'department_id' => $departmentId,
+    //             'department_name' => $departmentName,
+    //             'total_color' => $items->sum('total_color'),
+    //             'total_bw' => $items->sum('total_bw'),
+    //             'total' => $items->sum('total')
+    //         ];
+    //     })->sortByDesc('total')->values();
+    //     return response()->json(['data' => $departmentSums],200);
+
+
+
+
+
+
+    // }
+    // public function getData(Request $request){
+    //     $query = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
+    //                         ->where('jobstatus', 'Done')
+    //                         ->whereIn('jobtype', ['Print', 'Copy']);
+
+    //     if ($request->has('startDate') && $request->has('endDate')) {
+    //         $startDate = date('Y-m-d', strtotime($request->startDate));
+    //         $endDate = date('Y-m-d', strtotime($request->endDate));
+    //         $query->whereBetween('date', [$startDate, $endDate]);
+    //     }
+
+    //     $data = $query->get();
+
+    //     // สร้าง associative array เพื่อเก็บผลลัพธ์แยกตาม department_id
+    //     $departmentSums = [];
+    //     $UserSums = [];
+
+    //     // วนลูปผลลัพธ์ที่ได้จากการ query
+    //     foreach ($data as $item) {
+    //         // ตรวจสอบว่าผู้ใช้มีความสัมพันธ์กับแผนกหรือไม่
+    //         if ($item->user_ref && $item->user_ref->dep_ref) {
+    //             $departmentId = $item->user_ref->dep_ref->id;
+    //             $departmentName = $item->user_ref->dep_ref->name;
+    //             // สร้างหรือเพิ่มข้อมูลใน associative array
+    //             if (!isset($departmentSums[$departmentId])) {
+    //                 $departmentSums[$departmentId] = [
+    //                     'department_id' => $departmentId,
+    //                     'department_name' => $departmentName,
+    //                     'total_color' => 0,
+    //                     'total_bw' => 0,
+    //                     'total' => 0
+    //                 ];
+    //             }
+
+    //             // เพิ่มค่า total_color และ total_bw
+    //             $departmentSums[$departmentId]['total_color'] += $item->total_color;
+    //             $departmentSums[$departmentId]['total_bw'] += $item->total_bw;
+
+    //             // คำนวณผลรวม total
+    //             $departmentSums[$departmentId]['total'] += $item->total_color + $item->total_bw;
+    //         }
+    //     }
+
+    //     // แปลง associative array เป็น indexed array
+    //     $departmentSums = array_values($departmentSums);
+
+    //     foreach ($data as $item) {
+    //         // ตรวจสอบว่าผู้ใช้มีความสัมพันธ์กับแผนกหรือไม่
+    //         if ($item->user_ref && $item->user_ref->name_eng) {
+    //             $depId = $item->user_ref->department_id;
+    //             $userCode = $item->user_ref->code;
+    //             $userName = $item->user_ref->name_eng;
+    //             // สร้างหรือเพิ่มข้อมูลใน associative array
+    //             if (!isset($UserSums[$userCode])) {
+    //                 $UserSums[$userCode] = [
+    //                     'depId' => $depId,
+    //                     'code' => $userCode,
+    //                     'users' => $userName,
+    //                     'total_color' => 0,
+    //                     'total_bw' => 0,
+    //                     'total' => 0
+    //                 ];
+    //             }
+
+    //             // เพิ่มค่า total_color และ total_bw
+    //             $UserSums[$userCode]['total_color'] += $item->total_color;
+    //             $UserSums[$userCode]['total_bw'] += $item->total_bw;
+
+    //             // คำนวณผลรวม total
+    //             $UserSums[$userCode]['total'] += $item->total_color + $item->total_bw;
+    //         }
+    //     }
+    //     $UserSums = array_values($UserSums);
+
+    //     return response()->json(['data' => $UserSums], 200);
+    // }
+    // public function getData(Request $request){
+    //     $query = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
+    //                         ->where('jobstatus', 'Done')
+    //                         ->whereIn('jobtype', ['Print', 'Copy']);
+
+    //     if ($request->has('startDate') && $request->has('endDate')) {
+    //         $startDate = date('Y-m-d', strtotime($request->startDate));
+    //         $endDate = date('Y-m-d', strtotime($request->endDate));
+    //         $query->whereBetween('date', [$startDate, $endDate]);
+    //     }
+
+    //     $data = $query->get();
+
+    //     // สร้างโครงสร้างข้อมูลเริ่มต้นเพื่อเก็บข้อมูลแผนกและผู้ใช้งานในแต่ละแผนก
+    //     $departments = [];
+
+    //     // วนลูปผลลัพธ์ที่ได้จากการ query เพื่อนำข้อมูลเข้าสู่โครงสร้างข้อมูล
+    //     foreach ($data as $item) {
+    //         if ($item->user_ref && $item->user_ref->dep_ref) {
+    //             $departmentId = $item->user_ref->dep_ref->id;
+    //             $departmentName = $item->user_ref->dep_ref->name;
+
+    //             // ตรวจสอบว่าแผนกมีอยู่ในโครงสร้างข้อมูลหรือไม่
+    //             if (!isset($departments[$departmentId])) {
+    //                 $departments[$departmentId] = [
+    //                     'department_id' => $departmentId,
+    //                     'department_name' => $departmentName,
+    //                     'total_bw' => 0,
+    //                     'total_color' => 0,
+    //                     'total' => 0,
+    //                     'users' => []
+    //                 ];
+    //             }
+
+    //             // เพิ่มข้อมูลผู้ใช้งานในแผนก
+    //             $userCode = $item->user_ref->code;
+    //             $userName = $item->user_ref->name_eng;
+    //             if (!isset($departments[$departmentId]['users'][$userCode])) {
+    //                 $departments[$departmentId]['users'][$userCode] = [
+    //                     'code' => $userCode,
+    //                     'name' => $userName,
+    //                     'total_bw' => 0,
+    //                     'total_color' => 0,
+    //                     'total' => 0
+    //                 ];
+    //             }
+
+    //             // นับผลรวมการใช้งานของผู้ใช้งานในแผนก
+    //             $departments[$departmentId]['users'][$userCode]['total_bw'] += $item->total_bw;
+    //             $departments[$departmentId]['users'][$userCode]['total_color'] += $item->total_color;
+    //             $departments[$departmentId]['users'][$userCode]['total'] += $item->total_bw + $item->total_color;
+    //         }
+    //     }
+
+    //     // คำนวณผลรวมของแผนก
+    //     foreach ($departments as &$department) {
+    //         $department['total_bw'] = array_sum(array_column($department['users'], 'total_bw'));
+    //         $department['total_color'] = array_sum(array_column($department['users'], 'total_color'));
+    //         $department['total'] = array_sum(array_column($department['users'], 'total'));
+    //     }
+
+    //     return response()->json(['data' => array_values($departments)], 200);
+    // }
+    public function getData(Request $request){
+        $query = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
+                            ->where('jobstatus', 'Done')
+                            ->whereIn('jobtype', ['Print', 'Copy']);
+
+        if ($request->has('startDate') && $request->has('endDate')) {
+            $startDate = date('Y-m-d', strtotime($request->startDate));
+            $endDate = date('Y-m-d', strtotime($request->endDate));
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }
+
+        $data = $query->get();
+
+        // สร้างโครงสร้างข้อมูลเริ่มต้นเพื่อเก็บข้อมูลแผนกและผู้ใช้งานในแต่ละแผนก
+        $departments = [];
+
+        // วนลูปผลลัพธ์ที่ได้จากการ query เพื่อนำข้อมูลเข้าสู่โครงสร้างข้อมูล
+        foreach ($data as $item) {
+            if ($item->user_ref && $item->user_ref->dep_ref) {
+                $departmentId = $item->user_ref->dep_ref->id ?? '000';
+                $departmentName = $item->user_ref->dep_ref->name ?? 'Other';
+
+                // ตรวจสอบว่าแผนกมีอยู่ในโครงสร้างข้อมูลหรือไม่
+                if (!isset($departments[$departmentId])) {
+                    $departments[$departmentId] = [
+                        'department_id' => $departmentId,
+                        'department_name' => $departmentName,
+                        'users' => []
+                    ];
+                }
+
+                // เพิ่มข้อมูลผู้ใช้งานในแผนก
+                $userCode = $item->user_ref->code;
+                $userName = $item->user_ref->name_eng;
+                if (!isset($departments[$departmentId]['users'][$userCode])) {
+                    $departments[$departmentId]['users'][$userCode] = [
+                        'code' => $userCode,
+                        'name' => $userName,
+                        'total_bw' => 0,
+                        'total_color' => 0,
+                        'total' => 0
+                    ];
+                }
+
+                // นับผลรวมการใช้งานของผู้ใช้งานในแผนก
+                $departments[$departmentId]['users'][$userCode]['total_bw'] += $item->total_bw;
+                $departments[$departmentId]['users'][$userCode]['total_color'] += $item->total_color;
+                $departments[$departmentId]['users'][$userCode]['total'] += $item->total_bw + $item->total_color;
+            }
+        }
+
+        // แปลงโครงสร้างข้อมูลใหม่เป็นรูปแบบที่ต้องการ
+        $formattedData = [];
+        foreach ($departments as $department) {
+            $formattedUsers = array_values($department['users']);
+            $formattedData[] = [
+                'department_id' => $department['department_id'],
+                'department_name' => $department['department_name'],
+                'users' => $formattedUsers
+            ];
+        }
+
+        return response()->json(['data' => $formattedData], 200);
+    }
+
+
+}

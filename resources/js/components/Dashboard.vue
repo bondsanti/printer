@@ -26,8 +26,8 @@
                     </div>
 
                     <div class="card-body">
-                        <div class="table-responsive p-ๅ">
-                            <table class="table table-striped table-hover">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover table-sm">
                                 <thead>
                                     <tr class="text-center">
                                         <th scope="col">#</th>

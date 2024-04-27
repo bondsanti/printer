@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ExcelImportController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,8 +20,11 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::post('/import-excel', [ExcelImportController::class, 'import']);
+Route::post('/import-excel', [ExcelImportController::class, 'importData']);
 Route::get('/data', [ExcelImportController::class, 'getData']);
 Route::get('/data/chart', [ExcelImportController::class, 'getBarChartbyYear']);
 Route::get('/data/chart/dep', [ExcelImportController::class, 'getBarChartbyYearWithDep']);
 Route::get('/data/chartpie', [ExcelImportController::class, 'getPieChartbyYearWithPrinter']);
+Route::get('/data/chartsimidonut', [ExcelImportController::class, 'getSimiDonutChartbyYearWithUser']);
+
+Route::get('/report/data',[ReportController::class,'getData']);

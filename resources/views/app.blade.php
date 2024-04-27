@@ -6,12 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Report Log Printer</title>
+    <link rel="icon" type="image/x-icon" href="{{ url('img/vbeicon.ico') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 </head>
-
+<style>
+    body {
+        font-family: 'Kanit', sans-serif;
+    }
+</style>
 <body>
 
     <div id="appvue"></div>
@@ -24,16 +29,10 @@
     </script>
     <script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.6/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
 
     <script src="{{ mix('js/app.js') }}"></script>
 </body>
 
 </html>
 
-<style>
-    body {
-        font-family: 'Kanit', sans-serif;
-    }
-</style>
+

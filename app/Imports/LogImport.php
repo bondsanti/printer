@@ -25,7 +25,7 @@ class LogImport implements ToModel, WithHeadingRow, WithChunkReading, WithBatchI
     public function model(array $row)
     {
         // dd($row);
-        $fullday = $row['year'] . "-" . $row['month'] . "-" . $row['day'];
+        $fullday = $row['year'] . "-" . sprintf("%02d",$row['month']) . "-" . sprintf("%02d", $row['day']);
         $timeValueFromExcel = $row['end_time'];
         // แปลงค่าเวลาให้เป็นชั่วโมง:นาที:วินาที
         $hours = floor($timeValueFromExcel * 24);

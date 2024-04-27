@@ -41,8 +41,39 @@
     <div class="col-12 col-md-6">
         <div class="card">
             <div class="card-body text-center">
-                <h5 class="card-title"></h5>
-
+                <h5 class="card-title">ปริมาณการพิมพ์ของผู้ใช้งาน TOP 10</h5>
+                <div class="form-check form-check-inline">
+                    <div class="form-check form-check-inline">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="fuji24"
+                            v-model="selectedPrinters"
+                            value="Fuji24"
+                            @change="filterDataBar2"
+                        />
+                        <label class="form-check-label" for="fuji24"
+                            >Fuji24</label
+                        >
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="fuji25"
+                            v-model="selectedPrinters"
+                            value="Fuji25"
+                            @change="filterDataBar2"
+                        />
+                        <label class="form-check-label" for="fuji25"
+                            >Fuji25</label
+                        >
+                    </div>
+                </div>
+                <div
+                    id="chart-simidonut-container"
+                    style="min-width: 310px; height: 400px; margin: 0 auto"
+                ></div>
             </div>
         </div>
     </div>
@@ -51,14 +82,15 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import Highcharts3 from "highcharts";
+import Highcharts4 from "highcharts";
 import axios from "axios";
 
 const selectedColors = ref(["total_color", "total_bw"]);
-
-
+const selectedPrinters = ref(["Fuji24", "Fuji25"]);
 
 onMounted(async () => {
     await Promise.all([fetchDataAndRenderChart()]);
+    await Promise.all([fetchDataAndRenderChart2()]);
 });
 
 async function fetchDataAndRenderChart() {
@@ -69,7 +101,23 @@ async function fetchDataAndRenderChart() {
             },
         });
         const data = response.data.data;
+        //console.log(data);
         renderChart(data);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
+
+async function fetchDataAndRenderChart2() {
+    try {
+        const response = await axios.get("/api/data/chartsimidonut", {
+            params: {
+                printers: selectedPrinters.value,
+            },
+        });
+        const data = response.data.data;
+        //console.log(data);
+        renderChart2(data);
     } catch (error) {
         console.error("Error fetching data:", error);
     }
@@ -84,7 +132,7 @@ function renderChart(data) {
             type: "pie",
         },
         tooltip: {
-            valueSuffix: "%",
+            valueSuffix: "แผ่น",
         },
         title: {
             text: "",
@@ -107,11 +155,11 @@ function renderChart(data) {
                             textOutline: "none",
                             opacity: 0.7,
                         },
-                        filter: {
-                            operator: ">",
-                            property: "percentage",
-                            value: 10,
-                        },
+                        // filter: {
+                        //     operator: ">",
+                        //     property: "percentage",
+                        //     value: 10,
+                        // },
                     },
                 ],
             },
@@ -120,10 +168,70 @@ function renderChart(data) {
             {
                 name: "Percentage",
                 colorByPoint: true,
-                data: data.map(item => ({
+                data: data.map((item) => ({
                     name: item.printer,
-                    y: parseInt(item.total)
-                }))
+                    y: parseInt(item.total),
+                })),
+            },
+        ],
+    });
+}
+
+function renderChart2(data) {
+    if (Highcharts4.value) {
+        Highcharts4.value.destroy();
+    }
+
+    Highcharts4.chart("chart-simidonut-container", {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 0,
+            plotShadow: false,
+        },
+        title: {
+            text: "TOP 10",
+            align: "center",
+            verticalAlign: "middle",
+            y: 60,
+            style: {
+                fontSize: "1.1em",
+            },
+        },
+        tooltip: {
+            pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>",
+        },
+        accessibility: {
+            point: {
+                valueSuffix: "%",
+            },
+        },
+        plotOptions: {
+            pie: {
+                dataLabels: {
+                    enabled: true,
+                    distance: 5,
+
+                    style: {
+                            textOutline: "none",
+                            opacity: 0.7,
+
+                    },
+                },
+                startAngle: -90,
+                endAngle: 90,
+                center: ["50%", "75%"],
+                size: "95%",
+            },
+        },
+        series: [
+            {
+                type: "pie",
+                name: "จำนวนพิมพ์",
+                innerSize: "50%",
+                data: data.map((item) => ({
+                    name: item.user,
+                    y: parseInt(item.total),
+                })),
             },
         ],
     });
@@ -132,5 +240,7 @@ function renderChart(data) {
 async function filterDataBar() {
     await fetchDataAndRenderChart();
 }
+async function filterDataBar2() {
+    await fetchDataAndRenderChart2();
+}
 </script>
-
