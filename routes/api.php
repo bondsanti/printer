@@ -28,3 +28,5 @@ Route::get('/data/chartpie', [ExcelImportController::class, 'getPieChartbyYearWi
 Route::get('/data/chartsimidonut', [ExcelImportController::class, 'getSimiDonutChartbyYearWithUser']);
 
 Route::get('/report/data',[ReportController::class,'getData']);
+Route::get('/report/data/department',[ReportController::class,'getDepartment']);
+Route::get('/report/data/user',[ReportController::class,'getUser']);

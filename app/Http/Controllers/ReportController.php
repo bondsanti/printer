@@ -180,10 +180,80 @@ class ReportController extends Controller
 
     //     return response()->json(['data' => array_values($departments)], 200);
     // }
-    public function getData(Request $request){
+    // public function getData(Request $request){
+    //     $query = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
+    //                         ->where('jobstatus', 'Done')
+    //                         ->whereIn('jobtype', ['Print', 'Copy']);
+
+    //     if ($request->has('startDate') && $request->has('endDate')) {
+    //         $startDate = date('Y-m-d', strtotime($request->startDate));
+    //         $endDate = date('Y-m-d', strtotime($request->endDate));
+    //         $query->whereBetween('date', [$startDate, $endDate]);
+    //     }
+
+    //     $data = $query->get();
+
+    //     // สร้างโครงสร้างข้อมูลเริ่มต้นเพื่อเก็บข้อมูลแผนกและผู้ใช้งานในแต่ละแผนก
+    //     $departments = [];
+
+    //     // วนลูปผลลัพธ์ที่ได้จากการ query เพื่อนำข้อมูลเข้าสู่โครงสร้างข้อมูล
+    //     foreach ($data as $item) {
+    //         if ($item->user_ref && $item->user_ref->dep_ref) {
+    //             $departmentId = $item->user_ref->dep_ref->id ?? '000';
+    //             $departmentName = $item->user_ref->dep_ref->name ?? 'Other';
+
+    //             // ตรวจสอบว่าแผนกมีอยู่ในโครงสร้างข้อมูลหรือไม่
+    //             if (!isset($departments[$departmentId])) {
+    //                 $departments[$departmentId] = [
+    //                     'department_id' => $departmentId,
+    //                     'department_name' => $departmentName,
+    //                     'total_bw' => 0,
+    //                     'total_color' => 0,
+    //                     'total' => 0,
+    //                     'users' => []
+    //                 ];
+    //             }
+
+    //             // เพิ่มข้อมูลผู้ใช้งานในแผนก
+    //             $userCode = $item->user_ref->code;
+    //             $userName = $item->user_ref->name_eng;
+    //             if (!isset($departments[$departmentId]['users'][$userCode])) {
+    //                 $departments[$departmentId]['users'][$userCode] = [
+    //                     'code' => $userCode,
+    //                     'name' => $userName,
+    //                     'total_bw' => 0,
+    //                     'total_color' => 0,
+    //                     'total' => 0
+    //                 ];
+    //             }
+
+    //             // นับผลรวมการใช้งานของผู้ใช้งานในแผนก
+    //             $departments[$departmentId]['users'][$userCode]['total_bw'] += $item->total_bw;
+    //             $departments[$departmentId]['users'][$userCode]['total_color'] += $item->total_color;
+    //             $departments[$departmentId]['users'][$userCode]['total'] += $item->total_bw + $item->total_color;
+    //         }
+    //     }
+
+    //     // แปลงโครงสร้างข้อมูลใหม่เป็นรูปแบบที่ต้องการ
+    //     $formattedData = [];
+    //     foreach ($departments as $department) {
+
+    //         $formattedUsers = array_values($department['users']);
+    //         $formattedData[] = [
+    //             'department_id' => $department['department_id'],
+    //             'department_name' => $department['department_name'],
+    //             'users' => $formattedUsers
+    //         ];
+    //     }
+
+    //     return response()->json(['data' => $formattedData], 200);
+    // }
+
+    public function getData(Request $request)
+    {
         $query = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
-                            ->where('jobstatus', 'Done')
-                            ->whereIn('jobtype', ['Print', 'Copy']);
+            ->where('jobstatus', 'Done')
+            ->whereIn('jobtype', ['Print', 'Copy']);
 
         if ($request->has('startDate') && $request->has('endDate')) {
             $startDate = date('Y-m-d', strtotime($request->startDate));
@@ -207,6 +277,9 @@ class ReportController extends Controller
                     $departments[$departmentId] = [
                         'department_id' => $departmentId,
                         'department_name' => $departmentName,
+                        'total_bw' => 0,
+                        'total_color' => 0,
+                        'total' => 0,
                         'users' => []
                     ];
                 }
@@ -225,6 +298,9 @@ class ReportController extends Controller
                 }
 
                 // นับผลรวมการใช้งานของผู้ใช้งานในแผนก
+                $departments[$departmentId]['total_bw'] += $item->total_bw;
+                $departments[$departmentId]['total_color'] += $item->total_color;
+                $departments[$departmentId]['total'] += $item->total_bw + $item->total_color;
                 $departments[$departmentId]['users'][$userCode]['total_bw'] += $item->total_bw;
                 $departments[$departmentId]['users'][$userCode]['total_color'] += $item->total_color;
                 $departments[$departmentId]['users'][$userCode]['total'] += $item->total_bw + $item->total_color;
@@ -234,10 +310,14 @@ class ReportController extends Controller
         // แปลงโครงสร้างข้อมูลใหม่เป็นรูปแบบที่ต้องการ
         $formattedData = [];
         foreach ($departments as $department) {
+
             $formattedUsers = array_values($department['users']);
             $formattedData[] = [
                 'department_id' => $department['department_id'],
                 'department_name' => $department['department_name'],
+                'total_bw' => $department['total_bw'],
+                'total_color' => $department['total_color'],
+                'total' => $department['total'],
                 'users' => $formattedUsers
             ];
         }
@@ -245,5 +325,34 @@ class ReportController extends Controller
         return response()->json(['data' => $formattedData], 200);
     }
 
+    public function getDepartment(Request $request)
+    {
+        $query = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id','user_ref.dep_ref:id,name'])->where('jobstatus', 'Done')->wherein('jobtype', ['Print', 'Copy']);
+        $data = $query->get();
 
+        $departmentSums = $data->groupBy('user_ref.department_id')->map(function ($items, $departmentId) {
+            $departmentName = $items->first()['user_ref']['dep_ref']['name'] ?? 'Other'; // ให้ค่าเป็น "-" ถ้า dep_ref มีค่าเป็น null
+            return [
+                'department_id' => $departmentId,
+                'department_name' => $departmentName,
+            ];
+        })->values();
+
+        return response()->json(['data' => $departmentSums],200);
+    }
+
+    public function getUser(Request $request)
+    {
+        $query = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id','user_ref.dep_ref:id,name'])->where('jobstatus', 'Done')->wherein('jobtype', ['Print', 'Copy']);
+        $data = $query->get();
+        $Users= $data->groupBy('user_ref.code')->map(function ($items, $code) {
+            $UserName = $items->first()['user_ref']['name_eng'] ?? $items->first()['username']; // ให้ค่าเป็น "-" ถ้า user_ref มีค่าเป็น null
+            return [
+                'code' => $code,
+                'user' => $UserName,
+            ];
+        })->values();
+
+        return response()->json(['data' => $Users],200);
+    }
 }

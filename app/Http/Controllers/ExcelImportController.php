@@ -104,7 +104,7 @@ class ExcelImportController extends Controller
         });
 
         $departmentSums = $data->groupBy('user_ref.department_id')->map(function ($items, $departmentId) {
-            $departmentName = $items->first()['user_ref']['dep_ref']['name'] ?? '-'; // ให้ค่าเป็น "-" ถ้า dep_ref มีค่าเป็น null
+            $departmentName = $items->first()['user_ref']['dep_ref']['name'] ?? 'Other'; // ให้ค่าเป็น "-" ถ้า dep_ref มีค่าเป็น null
             return [
                 'department_id' => $departmentId,
                 'department_name' => $departmentName,
