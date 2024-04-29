@@ -1,3 +1,73 @@
+<script setup>
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import Swal from "sweetalert2";
+import Loading from "../components/Loading.vue";
+import Chart from "../components/Chart.vue";
+import ChartPie from "../components/ChartPie.vue";
+
+const items = ref([]);
+const progress = ref(0);
+const isLoading = ref(false);
+const isImportLoading = ref(false);
+
+onMounted(async () => {
+    try {
+        isLoading.value = true;
+        const response = await axios.get("/api/data");
+        isLoading.value = false;
+        items.value = response.data.data;
+        //console.log(items.value);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+const uploadData = async () => {
+    const printer = document.getElementById("printer").value;
+    const fileInput = document.getElementById("fileUpload");
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append("excel_file", file);
+    formData.append("printer", printer);
+
+    try {
+        isImportLoading.value = true;
+        const response = await axios.post("/api/import-excel", formData, {
+            // onUploadProgress: (progressEvent) => {
+            //     if (progressEvent.lengthComputable) {
+            //         progress.value = Math.round(
+            //             (progressEvent.loaded * 100) / progressEvent.total
+            //         );
+            //     }
+            // },
+        });
+        isImportLoading.value = false;
+        Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: response.data.message,
+            showConfirmButton: false,
+            timer: 1000,
+        }).then(() => {
+            setTimeout(() => {
+                location.reload(); // รีโหลดหน้าเว็บ
+            }, 200);
+        });
+    } catch (error) {
+        //console.error(error);
+        isImportLoading.value = false;
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.response.data.message,
+        });
+    } finally {
+        progress.value = null;
+    }
+};
+</script>
+
 <template>
     <div class="mt-3">
         <div class="row mb-3">
@@ -16,7 +86,7 @@
                         <div class="btn-group me-2">
                             <button
                                 type="button"
-                                class="btn btn-sm btn-primary"
+                                class="btn btn-sm btn-warning"
                                 data-bs-toggle="modal"
                                 data-bs-target="#exampleModal"
                             >
@@ -179,73 +249,4 @@
     </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
-import Swal from "sweetalert2";
-import Loading from "../components/Loading.vue";
-import InfoCard from "../components/InfoCard.vue";
-import Chart from "../components/Chart.vue";
-import ChartPie from "../components/ChartPie.vue";
 
-const items = ref([]);
-const progress = ref(0);
-const isLoading = ref(false);
-const isImportLoading = ref(false);
-
-onMounted(async () => {
-    try {
-        isLoading.value = true;
-        const response = await axios.get("/api/data");
-        isLoading.value = false;
-        items.value = response.data.data;
-        //console.log(items.value);
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-const uploadData = async () => {
-    const printer = document.getElementById("printer").value;
-    const fileInput = document.getElementById("fileUpload");
-    const file = fileInput.files[0];
-    const formData = new FormData();
-    formData.append("excel_file", file);
-    formData.append("printer", printer);
-
-    try {
-        isImportLoading.value = true;
-        const response = await axios.post("/api/import-excel", formData, {
-            // onUploadProgress: (progressEvent) => {
-            //     if (progressEvent.lengthComputable) {
-            //         progress.value = Math.round(
-            //             (progressEvent.loaded * 100) / progressEvent.total
-            //         );
-            //     }
-            // },
-        });
-        isImportLoading.value = false;
-        Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: response.data.message,
-            showConfirmButton: false,
-            timer: 1000,
-        }).then(() => {
-            setTimeout(() => {
-                location.reload(); // รีโหลดหน้าเว็บ
-            }, 200);
-        });
-    } catch (error) {
-        //console.error(error);
-        isImportLoading.value = false;
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: error.response.data.message,
-        });
-    } finally {
-        progress.value = null;
-    }
-};
-</script>

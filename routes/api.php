@@ -30,3 +30,7 @@ Route::get('/data/chartsimidonut', [ExcelImportController::class, 'getSimiDonutC
 Route::get('/report/data',[ReportController::class,'getData']);
 Route::get('/report/data/department',[ReportController::class,'getDepartment']);
 Route::get('/report/data/user',[ReportController::class,'getUser']);
+Route::get('/report/data/chart/dep',[ReportController::class,'getBarChartbyDep']);
+Route::get('/report/data/chartpie',[ReportController::class,'getPieChartbyPrinter']);
+Route::get('/report/data/chart/users',[ReportController::class,'getBarChartbyUser']);
+Route::get('/report/data/printer',[ReportController::class,'getDataPrinter']);

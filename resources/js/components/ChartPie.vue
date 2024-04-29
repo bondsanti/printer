@@ -1,84 +1,3 @@
-<template>
-    <div class="col-12 col-md-6">
-        <div class="card">
-            <div class="card-body text-center">
-                <h5 class="card-title">ปริมาณการพิมพ์แต่ละเครื่อง</h5>
-                <div class="form-check form-check-inline">
-                    <div class="form-check form-check-inline">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="total_color"
-                            v-model="selectedColors"
-                            value="total_color"
-                            @change="filterDataBar"
-                        />
-                        <label class="form-check-label" for="color"
-                            >Total Color</label
-                        >
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="total_bw"
-                            v-model="selectedColors"
-                            value="total_bw"
-                            @change="filterDataBar"
-                        />
-                        <label class="form-check-label" for="bw"
-                            >Total BW</label
-                        >
-                    </div>
-                </div>
-                <div
-                    id="chart-pie-container"
-                    style="min-width: 310px; height: 400px; margin: 0 auto"
-                ></div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-md-6">
-        <div class="card">
-            <div class="card-body text-center">
-                <h5 class="card-title">ปริมาณการพิมพ์ของผู้ใช้งาน TOP 10</h5>
-                <div class="form-check form-check-inline">
-                    <div class="form-check form-check-inline">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="fuji24"
-                            v-model="selectedPrinters"
-                            value="Fuji24"
-                            @change="filterDataBar2"
-                        />
-                        <label class="form-check-label" for="fuji24"
-                            >Fuji24</label
-                        >
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="fuji25"
-                            v-model="selectedPrinters"
-                            value="Fuji25"
-                            @change="filterDataBar2"
-                        />
-                        <label class="form-check-label" for="fuji25"
-                            >Fuji25</label
-                        >
-                    </div>
-                </div>
-                <div
-                    id="chart-simidonut-container"
-                    style="min-width: 310px; height: 400px; margin: 0 auto"
-                ></div>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from "vue";
 import Highcharts3 from "highcharts";
@@ -244,3 +163,86 @@ async function filterDataBar2() {
     await fetchDataAndRenderChart2();
 }
 </script>
+
+<template>
+    <div class="col-12 col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">ปริมาณการพิมพ์แต่ละเครื่อง</h5>
+                <div class="form-check form-check-inline">
+                    <div class="form-check form-check-inline">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="total_color"
+                            v-model="selectedColors"
+                            value="total_color"
+                            @change="filterDataBar"
+                        />
+                        <label class="form-check-label" for="color"
+                            >Total Color</label
+                        >
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="total_bw"
+                            v-model="selectedColors"
+                            value="total_bw"
+                            @change="filterDataBar"
+                        />
+                        <label class="form-check-label" for="bw"
+                            >Total BW</label
+                        >
+                    </div>
+                </div>
+                <div
+                    id="chart-pie-container"
+                    style="min-width: 310px; height: 400px; margin: 0 auto"
+                ></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">ปริมาณการพิมพ์ของผู้ใช้งาน TOP 10</h5>
+                <div class="form-check form-check-inline">
+                    <div class="form-check form-check-inline">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="fuji24"
+                            v-model="selectedPrinters"
+                            value="Fuji24"
+                            @change="filterDataBar2"
+                        />
+                        <label class="form-check-label" for="fuji24"
+                            >Fuji24</label
+                        >
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="fuji25"
+                            v-model="selectedPrinters"
+                            value="Fuji25"
+                            @change="filterDataBar2"
+                        />
+                        <label class="form-check-label" for="fuji25"
+                            >Fuji25</label
+                        >
+                    </div>
+                </div>
+                <div
+                    id="chart-simidonut-container"
+                    style="min-width: 310px; height: 400px; margin: 0 auto"
+                ></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+
