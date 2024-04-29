@@ -48,14 +48,14 @@
                                     ><i class="fas fa-chart-bar"></i> รายงาน</router-link
                                 >
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a href="#"
                                     class="nav-link"
                                     aria-current="page"
                                     active-class="active"
                                     ><i class="fas fa-book-open"></i> คู่มือ</a
                                 >
-                            </li>
+                            </li> -->
 
                         </ul>
                     </div>
