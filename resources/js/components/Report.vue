@@ -935,15 +935,15 @@ async function submitForm() {
                                             <td></td>
                                             <td>{{ user.code }}</td>
                                             <td>{{ user.name }}</td>
-                                            <td class="text-center">{{ user.total_bw }}</td>
                                             <td class="text-center">{{ user.total_color }}</td>
+                                            <td class="text-center">{{ user.total_bw }}</td>
                                             <td class="text-center">{{ user.total }}</td>
                                         </tr>
                                         <!-- แสดงผลรวมของแผนก -->
                                         <tr style="background-color: #93c5fd">
                                             <td colspan="3"></td>
                                             <!-- <td class="text-right">Total department</td> -->
-                                            <td class="text-center">{{ department.total_bw }}</td>
+                                            <td class="text-center">{{ department.total_color }}</td>
                                             <td class="text-center">
                                                 {{ department.total_color }}
                                             </td>
