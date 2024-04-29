@@ -945,7 +945,7 @@ async function submitForm() {
                                             <!-- <td class="text-right">Total department</td> -->
                                             <td class="text-center">{{ department.total_color }}</td>
                                             <td class="text-center">
-                                                {{ department.total_color }}
+                                                {{ department.total_bw }}
                                             </td>
                                             <td class="text-center">{{ department.total }}</td>
                                         </tr>
