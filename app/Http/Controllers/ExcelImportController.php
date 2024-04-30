@@ -37,10 +37,10 @@ class ExcelImportController extends Controller
         $currentYear = Carbon::now()->year;
 
         $data = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
-            ->wherein('jobtype', ['Print', 'Copy'])
+            ->wherein('jobtype', ['Print', 'Copy'])->where('jobstatus', 'Done')
             ->whereYear('date', $currentYear)
             ->orderByDesc('id')
-            ->take(300)->get();
+            ->take(500)->get();
 
         return response()->json(['data' => $data],200);
     }

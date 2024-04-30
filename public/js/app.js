@@ -23695,22 +23695,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             case 4:
               response = _context.sent;
               isLoading.value = false;
-              items.value = response.data.data; //console.log(items.value);
-
-              _context.next = 12;
+              items.value = response.data.data;
+              console.log(items.value);
+              _context.next = 13;
               break;
 
-            case 9:
-              _context.prev = 9;
+            case 10:
+              _context.prev = 10;
               _context.t0 = _context["catch"](0);
               console.error(_context.t0);
 
-            case 12:
+            case 13:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 9]]);
+      }, _callee, null, [[0, 10]]);
     })));
 
     var uploadData = /*#__PURE__*/function () {
@@ -23856,7 +23856,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var selectedUsers = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(null);
     var isLoading = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
     var startDate = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)("");
-    var endDate = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(""); //select in chart
+    var endDate = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)("");
+    var resultData = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]); //select in chart
 
     var selectedPrintersDep = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(["Fuji24", "Fuji25"]);
     var selectedPrintersUser = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(["Fuji24", "Fuji25"]);
@@ -24443,8 +24444,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                _context8.prev = 0;
-                _context8.next = 3;
+                try {
+                  sweetalert2__WEBPACK_IMPORTED_MODULE_2___default().fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Data loaded successfully.",
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+                } catch (error) {
+                  sweetalert2__WEBPACK_IMPORTED_MODULE_2___default().fire({
+                    icon: "error",
+                    title: "Error",
+                    text: error.message // แสดงข้อความ error ที่เกิดขึ้น
+
+                  });
+                }
+
+                _context8.prev = 1;
+                _context8.next = 4;
                 return axios__WEBPACK_IMPORTED_MODULE_1___default().get("/api/report/data", {
                   params: {
                     startDate: startDate.value,
@@ -24453,20 +24471,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 });
 
-              case 3:
+              case 4:
                 response = _context8.sent;
                 items.value = response.data.data;
-                _context8.next = 10;
+                _context8.next = 11;
                 break;
 
-              case 7:
-                _context8.prev = 7;
-                _context8.t0 = _context8["catch"](0);
+              case 8:
+                _context8.prev = 8;
+                _context8.t0 = _context8["catch"](1);
                 console.error(_context8.t0);
 
-              case 10:
-                _context8.prev = 10;
-                _context8.next = 13;
+              case 11:
+                _context8.prev = 11;
+                _context8.next = 14;
                 return axios__WEBPACK_IMPORTED_MODULE_1___default().get("/api/report/data/chartpie", {
                   params: {
                     startDate: startDate.value,
@@ -24476,22 +24494,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 });
 
-              case 13:
+              case 14:
                 _response4 = _context8.sent;
                 data = _response4.data.data; //console.log(data);
 
                 renderChart(data);
-                _context8.next = 21;
+                _context8.next = 22;
                 break;
 
-              case 18:
-                _context8.prev = 18;
-                _context8.t1 = _context8["catch"](10);
+              case 19:
+                _context8.prev = 19;
+                _context8.t1 = _context8["catch"](11);
                 console.error("Error fetching data:", _context8.t1);
 
-              case 21:
-                _context8.prev = 21;
-                _context8.next = 24;
+              case 22:
+                _context8.prev = 22;
+                _context8.next = 25;
                 return axios__WEBPACK_IMPORTED_MODULE_1___default().get("/api/report/data/chartpie", {
                   params: {
                     startDate: startDate.value,
@@ -24501,22 +24519,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 });
 
-              case 24:
+              case 25:
                 _response5 = _context8.sent;
                 _data = _response5.data.data; //console.log(data);
 
                 renderChart(_data);
-                _context8.next = 32;
+                _context8.next = 33;
                 break;
 
-              case 29:
-                _context8.prev = 29;
-                _context8.t2 = _context8["catch"](21);
+              case 30:
+                _context8.prev = 30;
+                _context8.t2 = _context8["catch"](22);
                 console.error("Error fetching data:", _context8.t2);
 
-              case 32:
-                _context8.prev = 32;
-                _context8.next = 35;
+              case 33:
+                _context8.prev = 33;
+                _context8.next = 36;
                 return axios__WEBPACK_IMPORTED_MODULE_1___default().get("/api/report/data/chart/dep", {
                   params: {
                     startDate: startDate.value,
@@ -24526,21 +24544,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 });
 
-              case 35:
+              case 36:
                 _response6 = _context8.sent;
                 _data2 = _response6.data.data;
                 renderChart2(_data2);
-                _context8.next = 43;
+                _context8.next = 44;
                 break;
 
-              case 40:
-                _context8.prev = 40;
-                _context8.t3 = _context8["catch"](32);
+              case 41:
+                _context8.prev = 41;
+                _context8.t3 = _context8["catch"](33);
                 console.error("Error fetching data:", _context8.t3);
 
-              case 43:
-                _context8.prev = 43;
-                _context8.next = 46;
+              case 44:
+                _context8.prev = 44;
+                _context8.next = 47;
                 return axios__WEBPACK_IMPORTED_MODULE_1___default().get("/api/report/data/chart/users", {
                   params: {
                     startDate: startDate.value,
@@ -24550,22 +24568,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 });
 
-              case 46:
+              case 47:
                 _response7 = _context8.sent;
                 _data3 = _response7.data.data;
                 renderChart3(_data3);
-                _context8.next = 54;
+                _context8.next = 55;
                 break;
 
-              case 51:
-                _context8.prev = 51;
-                _context8.t4 = _context8["catch"](43);
+              case 52:
+                _context8.prev = 52;
+                _context8.t4 = _context8["catch"](44);
                 console.error("Error fetching data:", _context8.t4);
 
-              case 54:
-                _context8.prev = 54;
+              case 55:
+                _context8.prev = 55;
                 isLoading.value = true;
-                _context8.next = 58;
+                _context8.next = 59;
                 return axios__WEBPACK_IMPORTED_MODULE_1___default().get("/api/report/data/printer", {
                   params: {
                     startDate: startDate.value,
@@ -24574,7 +24592,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 });
 
-              case 58:
+              case 59:
                 _response8 = _context8.sent;
                 //console.log(response);
                 isLoading.value = false;
@@ -24584,24 +24602,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     printer24.value = item;
                   } else if (item.printername === "Fuji25") {
                     printer25.value = item;
-                  } // เพิ่มเงื่อนไขตามชื่อเครื่องพิมพ์อื่นๆ ตามต้องการ
-
+                  }
                 });
 
-                _context8.next = 66;
+                _context8.next = 67;
                 break;
 
-              case 63:
-                _context8.prev = 63;
-                _context8.t5 = _context8["catch"](54);
+              case 64:
+                _context8.prev = 64;
+                _context8.t5 = _context8["catch"](55);
                 console.log(_context8.t5);
 
-              case 66:
+              case 67:
               case "end":
                 return _context8.stop();
             }
           }
-        }, _callee8, null, [[0, 7], [10, 18], [21, 29], [32, 40], [43, 51], [54, 63]]);
+        }, _callee8, null, [[1, 8], [11, 19], [22, 30], [33, 41], [44, 52], [55, 64]]);
       }));
       return _submitForm.apply(this, arguments);
     }
@@ -24617,6 +24634,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       isLoading: isLoading,
       startDate: startDate,
       endDate: endDate,
+      resultData: resultData,
       selectedPrintersDep: selectedPrintersDep,
       selectedPrintersUser: selectedPrintersUser,
       selectedColors: selectedColors,
@@ -25069,16 +25087,26 @@ var _hoisted_3 = {
   "class": "row mb-3"
 };
 var _hoisted_4 = {
+  xmlns: "http://www.w3.org/2000/svg",
+  style: {
+    "display": "none"
+  }
+};
+
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<symbol id=\"check-circle-fill\" fill=\"currentColor\" viewBox=\"0 0 16 16\"><path d=\"M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z\"></path></symbol><symbol id=\"info-fill\" fill=\"currentColor\" viewBox=\"0 0 16 16\"><path d=\"M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z\"></path></symbol><symbol id=\"exclamation-triangle-fill\" fill=\"currentColor\" viewBox=\"0 0 16 16\"><path d=\"M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z\"></path></symbol>", 3);
+
+var _hoisted_8 = [_hoisted_5];
+var _hoisted_9 = {
   "class": "row"
 };
-var _hoisted_5 = {
+var _hoisted_10 = {
   "class": "col-12"
 };
-var _hoisted_6 = {
+var _hoisted_11 = {
   "class": "card border-info"
 };
 
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   "class": "card-header bg-info bg-gradient"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" ข้อมูล Log Printer ทั้งหมด "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   "class": "btn-group me-2"
@@ -25093,17 +25121,17 @@ var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 /* HOISTED */
 );
 
-var _hoisted_8 = {
+var _hoisted_13 = {
   "class": "card-body"
 };
-var _hoisted_9 = {
+var _hoisted_14 = {
   "class": "table-responsive"
 };
-var _hoisted_10 = {
+var _hoisted_15 = {
   "class": "table table-striped table-hover table-sm"
 };
 
-var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", {
+var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", {
   "class": "text-center"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
   scope: "col"
@@ -25119,6 +25147,8 @@ var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
   scope: "col"
 }, "รหัสพนักงาน"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
   scope: "col"
+}, "แผนก"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+  scope: "col"
 }, "ชื่อ-นามสกุล"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
   scope: "col"
 }, "สี"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
@@ -25127,48 +25157,33 @@ var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_12 = {
+var _hoisted_17 = {
   key: 0
 };
-var _hoisted_13 = {
+var _hoisted_18 = {
   colspan: "9",
   "class": "text-center"
 };
-var _hoisted_14 = {
+var _hoisted_19 = {
   key: 1
 };
-var _hoisted_15 = {
+var _hoisted_20 = {
   key: 0
 };
 
-var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", {
+var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", {
   colspan: "9",
   "class": "text-center"
 }, " ไม่พบข้อมูล ", -1
 /* HOISTED */
 );
 
-var _hoisted_17 = [_hoisted_16];
-var _hoisted_18 = {
-  "class": "text-center"
-};
-var _hoisted_19 = {
-  "class": "text-center"
-};
-var _hoisted_20 = {
-  "class": "text-center"
-};
-var _hoisted_21 = {
-  "class": "text-center"
-};
-var _hoisted_22 = {
-  "class": "text-center"
-};
+var _hoisted_22 = [_hoisted_21];
 var _hoisted_23 = {
   "class": "text-center"
 };
 var _hoisted_24 = {
-  "class": "text-left"
+  "class": "text-center"
 };
 var _hoisted_25 = {
   "class": "text-center"
@@ -25177,33 +25192,99 @@ var _hoisted_26 = {
   "class": "text-center"
 };
 var _hoisted_27 = {
+  "class": "text-center"
+};
+var _hoisted_28 = {
+  "class": "text-center"
+};
+var _hoisted_29 = {
+  "class": "text-left"
+};
+var _hoisted_30 = {
+  "class": "text-left"
+};
+var _hoisted_31 = {
+  "class": "text-center"
+};
+var _hoisted_32 = {
+  "class": "text-center"
+};
+var _hoisted_33 = {
   "class": "modal fade",
   id: "exampleModal",
   tabindex: "-1",
   "aria-labelledby": "exampleModalLabel",
   "aria-hidden": "true"
 };
-var _hoisted_28 = {
+var _hoisted_34 = {
   "class": "modal-dialog",
   role: "document"
 };
-var _hoisted_29 = {
+var _hoisted_35 = {
   "class": "modal-content"
 };
 
-var _hoisted_30 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"modal-header\"><h5 class=\"modal-title\">Import Data</h5><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button></div><div class=\"modal-body\"><div class=\"mb-3\"><select class=\"form-select\" id=\"printer\" name=\"printer\"><option value=\"\">เลือก Printer</option><option value=\"Fuji24\">Fuji ชั้น 24</option><option value=\"Fuji25\">Fuji ชั้น 25</option></select></div><div class=\"input-group mb-3\"><input type=\"file\" class=\"form-control\" id=\"fileUpload\" name=\"fileUpload\" accept=\".xls,.xlsx\"></div><!-- &lt;div\n                        class=&quot;progress&quot;\n                        v-if=&quot;progress !== null &amp;&amp; progress !== 0&quot;\n                    &gt;\n                        &lt;div\n                            class=&quot;progress-bar progress-bar-striped progress-bar-animated bg-success&quot;\n                            role=&quot;progressbar&quot;\n                            :style=&quot;{ width: progress + &#39;%&#39; }&quot;\n                            :aria-valuenow=&quot;progress&quot;\n                            aria-valuemin=&quot;0&quot;\n                            aria-valuemax=&quot;100&quot;\n                        &gt;\n                            {{ progress }}%\n                        &lt;/div&gt;\n                    &lt;/div&gt; --></div>", 2);
+var _hoisted_36 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  "class": "modal-header"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", {
+  "class": "modal-title"
+}, "Import Data"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  type: "button",
+  "class": "btn-close",
+  "data-bs-dismiss": "modal",
+  "aria-label": "Close"
+})], -1
+/* HOISTED */
+);
 
-var _hoisted_32 = {
+var _hoisted_37 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  "class": "modal-body"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  "class": "mb-3"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+  "class": "form-select",
+  id: "printer",
+  name: "printer"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+  value: ""
+}, "เลือก Printer"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+  value: "Fuji24"
+}, "Fuji ชั้น 24"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+  value: "Fuji25"
+}, "Fuji ชั้น 25")])]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  "class": "input-group mb-3"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  type: "file",
+  "class": "form-control",
+  id: "fileUpload",
+  name: "fileUpload",
+  accept: ".xls,.xlsx"
+})]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  "class": "alert alert-warning d-flex align-items-center",
+  role: "alert"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("svg", {
+  "class": "bi flex-shrink-0 me-2",
+  width: "24",
+  height: "24",
+  role: "img",
+  "aria-label": "Warning:"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("use", {
+  "xlink:href": "#exclamation-triangle-fill"
+})]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, "Limit Import 2,000 Record !!!")]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div\n                        class=\"progress\"\n                        v-if=\"progress !== null && progress !== 0\"\n                    >\n                        <div\n                            class=\"progress-bar progress-bar-striped progress-bar-animated bg-success\"\n                            role=\"progressbar\"\n                            :style=\"{ width: progress + '%' }\"\n                            :aria-valuenow=\"progress\"\n                            aria-valuemin=\"0\"\n                            aria-valuemax=\"100\"\n                        >\n                            {{ progress }}%\n                        </div>\n                    </div> ")], -1
+/* HOISTED */
+);
+
+var _hoisted_38 = {
   "class": "modal-footer"
 };
-var _hoisted_33 = {
+var _hoisted_39 = {
   key: 1,
   "class": "btn btn-primary",
   type: "button",
   disabled: ""
 };
 
-var _hoisted_34 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+var _hoisted_40 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
   "class": "spinner-border spinner-border-sm",
   role: "status",
   "aria-hidden": "true"
@@ -25211,47 +25292,49 @@ var _hoisted_34 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_35 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+var _hoisted_41 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
   "class": "visually-hidden"
 }, "Loading...", -1
 /* HOISTED */
 );
 
-var _hoisted_36 = [_hoisted_34, _hoisted_35];
+var _hoisted_42 = [_hoisted_40, _hoisted_41];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Chart"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["ChartPie"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [_hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_10, [_hoisted_11, $setup.isLoading ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tbody", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Loading"])])])])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tbody", _hoisted_14, [$setup.items.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", _hoisted_15, _hoisted_17)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Chart"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["ChartPie"])]), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("svg", _hoisted_4, _hoisted_8)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [_hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_15, [_hoisted_16, $setup.isLoading ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tbody", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Loading"])])])])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tbody", _hoisted_19, [$setup.items.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", _hoisted_20, _hoisted_22)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
     key: 1
   }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.items, function (item, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
       key: index,
       "class": "text-center"
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.id), 1
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.id), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_19, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.date), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_24, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.date), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.time), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_25, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.time), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_21, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.printername), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.printername), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_22, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.jobtype), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_27, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.jobtype), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.code_user), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_28, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.code_user), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_24, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.user_ref ? item.user_ref.name_eng : '-'), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_29, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.user_ref ? item.user_ref.dep_ref.name : "-"), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_25, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.total_color), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_30, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.user_ref ? item.user_ref.name_eng : "-"), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.total_bw), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_31, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.total_color), 1
+    /* TEXT */
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_32, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.total_bw), 1
     /* TEXT */
     )]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))]))])])])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Modal "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_28, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [_hoisted_30, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_32, [!$setup.isImportLoading ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+  ))]))])])])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Modal "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_33, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_34, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_35, [_hoisted_36, _hoisted_37, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_38, [!$setup.isImportLoading ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 0,
     type: "button",
     "class": "btn btn-primary",
     onClick: $setup.uploadData
-  }, " Upload Data ")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", _hoisted_33, _hoisted_36))])])])])], 64
+  }, " Upload Data ")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", _hoisted_39, _hoisted_42))])])])])], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -25803,7 +25886,7 @@ var _hoisted_107 = {
   "class": "text-center"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"col-md-6 offset-md-3\"> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <svg xmlns=\"http://www.w3.org/2000/svg\" style=\"display: none\">\n                <symbol\n                    id=\"check-circle-fill\"\n                    fill=\"currentColor\"\n                    viewBox=\"0 0 16 16\"\n                >\n                    <path\n                        d=\"M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z\"\n                    />\n                </symbol>\n                <symbol id=\"info-fill\" fill=\"currentColor\" viewBox=\"0 0 16 16\">\n                    <path\n                        d=\"M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z\"\n                    />\n                </symbol>\n                <symbol\n                    id=\"exclamation-triangle-fill\"\n                    fill=\"currentColor\"\n                    viewBox=\"0 0 16 16\"\n                >\n                    <path\n                        d=\"M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z\"\n                    />\n                </symbol>\n            </svg> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"col-md-6 offset-md-3\"> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"col-12\">\n                <div\n                    class=\"alert alert-primary d-flex align-items-center\"\n                    role=\"alert\"\n                >\n                    <svg\n                        class=\"bi flex-shrink-0 me-2\"\n                        width=\"24\"\n                        height=\"24\"\n                        role=\"img\"\n                        aria-label=\"Info:\"\n                    >\n                        <use xlink:href=\"#info-fill\" />\n                    </svg>\n                    <div>{{ resultData.startDate }}</div>\n                </div>\n            </div> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
     "class": "row g-3",
     onSubmit: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)($setup.submitForm, ["prevent"])
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [_hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
