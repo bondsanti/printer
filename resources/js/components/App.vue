@@ -1,14 +1,30 @@
-<script>
-
+<script setup>
+import { ref, onMounted } from "vue";
+import axios from "axios";
 import Navbar from "./layouts/Navbar.vue";
 import Footer from "./layouts/Footer.vue";
-export default {
-    components: {
-        Navbar,
-        Footer,
-    },
+
+
+const userData = ref([]);
+
+
+const fetchLoginId = async () => {
+    try {
+        const response = await axios.get("/role/users");
+        userData.value = response.data.data;
+        //console.log(userData.value);
+    } catch (error) {
+        console.log("Error fetching loginId:", error);
+    }
 };
+
+onMounted(() => {
+    fetchLoginId();
+});
+
+
 </script>
+
 <style>
   .active  {
     border-bottom: 1px solid #000;
@@ -83,7 +99,7 @@ export default {
 }
 </style>
 <template>
-   <Navbar></Navbar>
+    <Navbar :userData="userData" />
 
     <div class="container-fluid">
 

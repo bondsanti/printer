@@ -40,7 +40,7 @@ class ExcelImportController extends Controller
             ->wherein('jobtype', ['Print', 'Copy'])->where('jobstatus', 'Done')
             ->whereYear('date', $currentYear)
             ->orderByDesc('id')
-            ->take(500)->get();
+            ->take(300)->get();
 
         return response()->json(['data' => $data],200);
     }

@@ -17,7 +17,7 @@ onMounted(async () => {
         const response = await axios.get("/api/data");
         isLoading.value = false;
         items.value = response.data.data;
-        console.log(items.value);
+        //console.log(items.value);
     } catch (error) {
         console.error(error);
     }
@@ -127,6 +127,7 @@ const uploadData = async () => {
                                 <thead>
                                     <tr class="text-center">
                                         <th scope="col">#</th>
+                                        <th scope="col">JobNo.</th>
                                         <th scope="col">วันที่</th>
                                         <th scope="col">เวลา</th>
                                         <th scope="col">เครื่องพิมพ์</th>
@@ -140,14 +141,14 @@ const uploadData = async () => {
                                 </thead>
                                 <tbody v-if="isLoading">
                                     <tr>
-                                        <td colspan="9" class="text-center">
+                                        <td colspan="11" class="text-center">
                                             <loading></loading>
                                         </td>
                                     </tr>
                                 </tbody>
                                 <tbody v-else>
                                     <tr v-if="items.length === 0">
-                                        <td colspan="9" class="text-center">
+                                        <td colspan="11" class="text-center">
                                             ไม่พบข้อมูล
                                         </td>
                                     </tr>
@@ -159,6 +160,9 @@ const uploadData = async () => {
                                     >
                                         <td class="text-center">
                                             {{ item.id }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ item.jobnumber }}
                                         </td>
                                         <td class="text-center">
                                             {{ item.date }}

@@ -9,7 +9,7 @@ class LogPrinter extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql_report';
+    protected $connection = 'mysql_printer';
     protected $table = 'log_printer_fuji';
 
     protected $fillable = [

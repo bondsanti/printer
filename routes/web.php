@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\CustomAuthController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,9 +13,37 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('app');
+// Route::get('/', function () {
+//     return view('app');
+// });
+// Route::get('/report', function () {
+//     return view('app');
+// })
+
+Route::get('Yj101dhjfdp376435xAzxc0091Dsdfk_astRqsdfk/{id}&{token}',[CustomAuthController::class,'AllowLoginConnect']);
+
+
+Route::middleware(['alreadyLogin'])->group(function () {
+
+    Route::get('/login',[CustomAuthController::class,'login']);
+    Route::post('/login/auth',[CustomAuthController::class,'loginUser'])->name('loginUser');
+
 });
-Route::get('/report', function () {
-    return view('app');
+
+Route::middleware(['isLogin'])->group(function () {
+
+    //Route::any('/{any}', fn() => view('app'))->where('any', '.*');
+    Route::get('/', function () {
+        return view('app');
+    });
+    Route::get('/report', function () {
+        return view('app');
+    });
+    Route::get('/users', function () {
+        return view('app');
+    });
+
+    Route::get('/role/users',[CustomAuthController::class,'getUser']);
+    Route::get('/logout/auth',[CustomAuthController::class,'logoutUser'])->name('logoutUser');
+
 });

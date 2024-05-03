@@ -23,7 +23,7 @@ async function fetchDataAndRenderChart() {
         //console.log(data);
         renderChart(data);
     } catch (error) {
-        console.error("Error fetching data:", error);
+        console.log("Error fetching data:", error);
     }
 }
 
@@ -38,7 +38,7 @@ async function fetchDataAndRenderChart2() {
         //console.log(data);
         renderChart2(data);
     } catch (error) {
-        console.error("Error fetching data:", error);
+        console.log("Error fetching data:", error);
     }
 }
 
