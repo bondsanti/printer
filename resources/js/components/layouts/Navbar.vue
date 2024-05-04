@@ -1,7 +1,23 @@
 <script setup>
-import { defineProps } from "vue";
-const { userData } = defineProps();
-console.log(userData);
+import { ref, onMounted } from "vue";
+import axios from "axios";
+const roleUser = ref([]);
+
+
+const fetchRole = async () => {
+    try {
+        const response = await axios.get("/role/users");
+        roleUser.value = response.data.data;
+        //console.log(roleUser.value);
+    } catch (error) {
+        console.log("Error fetching loginId:", error);
+    }
+};
+
+onMounted(() => {
+    fetchRole();
+});
+
 const imagePath = "/img/vbe_old.png";
 </script>
 <template>
@@ -61,7 +77,7 @@ const imagePath = "/img/vbe_old.png";
                         </li>
 
 
-                        <li class="nav-item" v-if="userData && userData.role_type === 'SuperAdmin'">
+                        <li class="nav-item" v-if="roleUser && roleUser.role_type === 'SuperAdmin'">
                             <router-link
                                 to="/users"
                                 class="nav-link"

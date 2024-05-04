@@ -116,8 +116,11 @@ function renderChart2(data) {
                 fontSize: "1.1em",
             },
         },
+        // tooltip: {
+        //     pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>",
+        // },
         tooltip: {
-            pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>",
+            pointFormat: 'Total : <b>{point.y} ({point.percentage:.1f}%)</b><br/>Total Color: <b>{point.total_color} </b><br/>Total BW: <b>{point.total_bw}</b>',
         },
         accessibility: {
             point: {
@@ -145,11 +148,13 @@ function renderChart2(data) {
         series: [
             {
                 type: "pie",
-                name: "จำนวนพิมพ์",
                 innerSize: "50%",
                 data: data.map((item) => ({
                     name: item.user,
                     y: parseInt(item.total),
+                    total_color: parseInt(item.total_color),
+                    total_bw: parseInt(item.total_bw),
+                    // total: parseInt(item.total),
                 })),
             },
         ],

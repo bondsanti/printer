@@ -138,11 +138,6 @@ class CustomAuthController extends Controller
 
     }
 
-    public function getUser()
-    {
-        $isRole = Role_user::with('user_ref:id,name_eng,position_id', 'user_ref.position_ref:id,name')->where('user_id', Session::get('loginId'))->first();
-        return response()->json(['data' => $isRole],200);
-    }
 
 
 }

@@ -23,6 +23,8 @@ class ExcelImportController extends Controller
 
             if ($printer) {
                 Excel::import(new LogImport($printer), $file);
+                Log::addLog($request->session()->get('loginId'), 'ImportExcel', $printer);
+
                 return response()->json(['message' => 'Imported successfully'], 200);
             } else {
                 return response()->json(['message' => 'No Selected Printer'], 400);
@@ -36,8 +38,9 @@ class ExcelImportController extends Controller
     {
         $currentYear = Carbon::now()->year;
 
-        $data = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id', 'user_ref.dep_ref:id,name'])
-            ->wherein('jobtype', ['Print', 'Copy'])->where('jobstatus', 'Done')
+        $data = LogPrinter::with(['user_ref:code,name_eng,department_id', 'user_ref.dep_ref:id,name'])
+        ->select('id', 'jobtype', 'date', 'username', 'time',  'jobstatus', 'code_user', 'printername', 'jobnumber', 'total_color', 'total_bw')
+            ->wherein('jobtype', ['Print', 'Copy'])
             ->whereYear('date', $currentYear)
             ->orderByDesc('id')
             ->take(300)->get();
@@ -110,7 +113,7 @@ class ExcelImportController extends Controller
                 'department_name' => $departmentName,
                 'total_color' => $items->sum('total_color'),
                 'total_bw' => $items->sum('total_bw'),
-                'total' => $items->sum('total')
+                'total' =>  $items->sum('total')
             ];
         })->values();
 
@@ -181,8 +184,8 @@ class ExcelImportController extends Controller
             return [
                 'code' => $code,
                 'user' => $UserName,
-                // 'total_color' => $items->sum('total_color'),
-                // 'total_bw' => $items->sum('total_bw'),
+                'total_color' => $items->sum('total_color'),
+                'total_bw' => $items->sum('total_bw'),
                 'total' => $items->sum('total')
             ];
         })->sortByDesc('total')->take(10)->values();

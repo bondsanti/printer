@@ -7,20 +7,37 @@ import Chart from "../components/Chart.vue";
 import ChartPie from "../components/ChartPie.vue";
 
 const items = ref([]);
+const roleUser = ref([]);
 const progress = ref(0);
 const isLoading = ref(false);
 const isImportLoading = ref(false);
 
-onMounted(async () => {
+const fetchRole = async () => {
+    try {
+        const response = await axios.get("/role/users");
+        roleUser.value = response.data.data;
+        //console.log(roleUser.value);
+    } catch (error) {
+        console.log("Error fetching loginId:", error);
+    }
+};
+
+const fetchData = async () => {
     try {
         isLoading.value = true;
         const response = await axios.get("/api/data");
         isLoading.value = false;
         items.value = response.data.data;
-        //console.log(items.value);
+        //console.log(items.value );
     } catch (error) {
-        console.error(error);
+        console.log(error);
     }
+};
+
+onMounted(async () => {
+    fetchRole();
+    fetchData();
+
 });
 
 const uploadData = async () => {
@@ -107,7 +124,7 @@ const uploadData = async () => {
                 <div class="card border-info">
                     <div class="card-header bg-info bg-gradient">
                         ข้อมูล Log Printer ทั้งหมด
-                        <div class="btn-group me-2">
+                        <div class="btn-group me-2" v-if="roleUser && roleUser.role_type !== 'User'">
                             <button
                                 type="button"
                                 class="btn btn-sm btn-warning"
@@ -190,7 +207,7 @@ const uploadData = async () => {
                                             {{
                                                 item.user_ref
                                                     ? item.user_ref.name_eng
-                                                    : "-"
+                                                    : item.username
                                             }}
                                         </td>
                                         <td class="text-center">
