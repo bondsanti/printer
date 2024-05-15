@@ -44,6 +44,9 @@ Route::middleware(['isLogin'])->group(function () {
     Route::get('/users', function () {
         return view('app');
     });
+    Route::get('/quota', function () {
+        return view('app');
+    });
 
     Route::get('/data/users',[UserController::class,'getData']);
     Route::get('/role/users',[UserController::class,'getRole']);

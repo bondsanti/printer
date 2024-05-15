@@ -67,6 +67,17 @@ const imagePath = "/img/vbe_old.png";
 
                         <li class="nav-item">
                             <router-link
+                                to="/quota"
+                                class="nav-link"
+                                aria-current="page"
+                                active-class="active"
+                                ><i class="fas fa-server"></i>
+                                โควตา</router-link
+                            >
+                        </li>
+
+                        <li class="nav-item">
+                            <router-link
                                 to="/report"
                                 class="nav-link"
                                 aria-current="page"

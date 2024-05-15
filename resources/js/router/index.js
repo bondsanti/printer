@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../components/Dashboard.vue';
 import Report from '../components/Report.vue';
 import User from '../components/User.vue';
+import Quota from '../components/Quota.vue';
 
 const routes = [
     {
@@ -18,7 +19,12 @@ const routes = [
         path: '/users',
         name: 'User',
         component: User
-    }
+    },
+    {
+        path: '/quota',
+        name: 'Quota',
+        component: Quota
+    },
 ];
 
 const router = createRouter({

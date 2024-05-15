@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\LogPrinter;
 use App\Imports\LogImport;
+use App\Imports\QuotaImport;
+use App\Models\Quota;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -23,7 +25,7 @@ class ExcelImportController extends Controller
 
             if ($printer) {
                 Excel::import(new LogImport($printer), $file);
-                Log::addLog($request->session()->get('loginId'), 'ImportExcel', $printer);
+                // Log::addLog(Session::get('loginId'), 'ImportExcel', $printer);
 
                 return response()->json(['message' => 'Imported successfully'], 200);
             } else {
@@ -191,6 +193,26 @@ class ExcelImportController extends Controller
         })->sortByDesc('total')->take(10)->values();
 
         return response()->json(['data' => $UserSums],200);
+    }
+
+    public function importQuota(Request $request)
+    {
+        if ($request->hasFile('excel_file')) {
+
+            $file = $request->file('excel_file');
+                Excel::import(new QuotaImport, $file);
+                return response()->json(['message' => 'Imported successfully'], 200);
+        }
+    }
+
+    public function getQuota(Request $request)
+    {
+
+
+        $data = Quota::with(['user_ref:code,name_eng,department_id', 'user_ref.dep_ref:id,name'])
+        ->select('name','code','department','total_color_24', 'total_bw_24', 'total_color_25', 'total_bw_25')->get();
+
+        return response()->json(['data' => $data],200);
     }
 
 }

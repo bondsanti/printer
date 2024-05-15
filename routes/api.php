@@ -34,3 +34,6 @@ Route::get('/report/data/chart/dep',[ReportController::class,'getBarChartbyDep']
 Route::get('/report/data/chartpie',[ReportController::class,'getPieChartbyPrinter']);
 Route::get('/report/data/chart/users',[ReportController::class,'getBarChartbyUser']);
 Route::get('/report/data/printer',[ReportController::class,'getDataPrinter']);
+
+Route::get('/data/quota', [ExcelImportController::class, 'getQuota']);
+Route::post('/quota/import-excel', [ExcelImportController::class, 'importQuota']);
