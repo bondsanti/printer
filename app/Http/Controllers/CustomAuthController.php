@@ -38,7 +38,54 @@ class CustomAuthController extends Controller
             return back();
         } else {
 
-            if ($user_hr->active != 0 or $user_hr->resign_date == null) {
+            // if ($user_hr->active != 0 or $user_hr->resign_date == null) {
+
+            //     $role_user = Role_user::where('user_id', $user_hr->id)->orwhere('active',1)->first();
+
+            //     if (!$role_user) {
+
+            //         Alert::warning('คุณไม่มีสิทธิ์เข้าระบบ', 'กรุณาติดต่อ Admin!!');
+            //         return back();
+
+            //     } else {
+
+            //         if (Hash::check($request->password, $user_hr->password)) {
+
+            //             $request->session()->put('loginId', $user_hr->id);
+
+            //             DB::table('vbeyond_report.log_login')->insert([
+            //                 'username' => $user_hr->code,
+            //                 'dates' => date('Y-m-d'),
+            //                 'timeStm' => date('Y-m-d H:i:s'),
+            //                 'page' => 'ReportPrinter'
+            //             ]);
+
+            //             Log::addLog($request->session()->get('loginId'), 'Login', 'Login');
+
+
+            //                 Alert::success('เข้าสู่ระบบสำเร็จ');
+            //                 return redirect('/');
+
+
+
+
+            //         } else {
+
+            //             Alert::warning('รหัสผ่านไม่ถูกต้อง', 'กรุณากรอกข้อมูลใหม่อีกครั้ง');
+            //             return back();
+            //         }
+
+
+            //         Alert::warning('รหัสผ่านไม่ถูกต้อง', 'กรุณากรอกข้อมูลใหม่อีกครั้ง');
+            //         return back();
+            //     }
+
+            // } else {
+            //     Alert::error('ไม่พบผู้ใช้งาน', 'กรุณากรอกข้อมูลใหม่อีกครั้ง');
+            //     return back();
+            // }
+
+            if ($user_hr->active != 0) {
 
                 $role_user = Role_user::where('user_id', $user_hr->id)->orwhere('active',1)->first();
 
@@ -104,12 +151,12 @@ class CustomAuthController extends Controller
     public function AllowLoginConnect(Request $request,$id,$token)
     {
 
-        $user = User::where('code', '=', $id)->orWhere('old_code', '=', $id)->first();
+        $user = User::where('id', '=', $id)->first();
         //dd($user);
         if($user){
             $request->session()->put('loginId',$user->id);
             // Auth::login($user);
-            $user->last_login_at = date('Y-m-d H:i:s');
+            // $user->last_login_at = date('Y-m-d H:i:s');
             $user->save();
             $checkToken = User::where('token', '=', $token)->first();
 

@@ -24,7 +24,8 @@ class UserController extends Controller
 
     public function getData()
     {
-        $User = Role_user::with('user_ref:id,code,name_eng,position_id', 'user_ref.position_ref:id,name')->get();
+        // $User = Role_user::with('user_ref:id,code,name_eng,position_id', 'user_ref.position_ref:id,name')->get();
+        $User = Role_user::with('user_ref:id,code,email')->get();
         return response()->json(['data' => $User],200);
     }
 

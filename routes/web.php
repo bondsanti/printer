@@ -22,7 +22,7 @@ use App\Http\Controllers\UserController;
 //     return view('app');
 // })
 
-Route::get('Yj101dhjfdp376435xAzxc0091Dsdfk_astRqsdfk/{id}&{token}',[CustomAuthController::class,'AllowLoginConnect']);
+Route::get('LS8EhYBLHmVNmGG2V1jJJtFvAdSxDbYzfVGR4chhbdGSiGUSTK4CBqcjxVMz2Uv2xT43hQC8Bp/{id}&{token}',[CustomAuthController::class,'AllowLoginConnect']);
 
 
 Route::middleware(['alreadyLogin'])->group(function () {
