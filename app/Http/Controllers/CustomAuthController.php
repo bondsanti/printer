@@ -153,10 +153,10 @@ class CustomAuthController extends Controller
     public function AllowLoginConnect(Request $request,$id,$token)
     {
 
-        $user = User::where('id', '=', $id)->first();
+        $user = User::where('user_id', '=', $id)->first();
         //dd($user);
         if($user){
-            $request->session()->put('loginId',$user->id);
+            $request->session()->put('loginId',$user->user_id);
             // Auth::login($user);
             // $user->last_login_at = date('Y-m-d H:i:s');
             $user->save();
