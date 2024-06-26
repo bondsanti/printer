@@ -30,7 +30,7 @@ class ExcelImportController extends Controller
         $userIdsString = implode(',', array_unique($userIds));
 
         try {
-            // First API call to get user data
+
             $userResponse = $client->request('GET', $url . '/get-users/code/' . $userIdsString, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $token
