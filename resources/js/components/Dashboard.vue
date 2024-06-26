@@ -28,7 +28,7 @@ const fetchData = async () => {
         const response = await axios.get("/api/data");
         isLoading.value = false;
         items.value = response.data.data;
-        //console.log(items.value );
+        //console.log(response);
     } catch (error) {
         console.log(error);
     }
@@ -123,7 +123,7 @@ const uploadData = async () => {
 
                 <div class="card border-info">
                     <div class="card-header bg-info bg-gradient">
-                        ข้อมูล Log Printer ทั้งหมด
+                        ข้อมูล Log Printer 300 รายการล่าสุด
                         <div class="btn-group me-2" v-if="roleUser && roleUser.role_type !== 'User'">
                             <button
                                 type="button"
@@ -198,16 +198,16 @@ const uploadData = async () => {
                                         </td>
                                         <td class="text-left">
                                             {{
-                                                item.user_ref
-                                                    ? item.user_ref.dep_ref.name
+                                                item.apiDataUser
+                                                    ? item.apiDataUser.department
                                                     : "-"
                                             }}
                                         </td>
                                         <td class="text-left">
                                             {{
-                                                item.user_ref
-                                                    ? item.user_ref.name_eng
-                                                    : item.username
+                                                item.apiDataUser
+                                                    ? item.apiDataUser.name_th
+                                                    : "-"
                                             }}
                                         </td>
                                         <td class="text-center">

@@ -11,10 +11,80 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
+use GuzzleHttp\Client;
 
 class ExcelImportController extends Controller
 {
+
+    private function addApiDataToUser($data)
+    {
+        if (!$data) {
+            return;
+        }
+
+        $client = new Client();
+        $url = env('API_URL');
+        $token = env('API_TOKEN_AUTH');
+
+        $userIds = $data->pluck('code_user')->toArray();
+        $userIdsString = implode(',', array_unique($userIds));
+
+        try {
+            // First API call to get user data
+            $userResponse = $client->request('GET', $url . '/get-users/code/' . $userIdsString, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token
+                ]
+            ]);
+
+            if ($userResponse->getStatusCode() == 200) {
+                $userApiResponse = json_decode($userResponse->getBody()->getContents(), true);
+
+                if (isset($userApiResponse['data']['data'])) {
+                    $userData = $userApiResponse['data']['data'];
+                } else {
+                    $userData = [];
+                }
+            } else {
+                $userData = [];
+            }
+
+            foreach ($data as $item) {
+                $userApiData = collect($userData)->firstWhere('code', $item->code_user);
+
+                if (is_object($item)) {
+                    $item->apiDataUser = $userApiData ? [
+                        'code' => $userApiData['code'],
+                        'name_th' => $userApiData['name_th'],
+                        'department_id' => $userApiData['department_id'],
+                        'department' => $userApiData['department']?:"Other",
+                        'active' => $userApiData['active'],
+                    ] : [
+                        'code' => $item->code_user,
+                        'name_th' => $item->username,
+                        'department_id' => 0,
+                        'department' => 'Other',
+                        'active' => 1,
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            // Handle exception by setting apiDataUser to null for all items
+            foreach ($data as $item) {
+                if (is_object($item)) {
+                    $item->apiDataUser = [
+                        'code' => $item->code_user,
+                        'name_th' => $item->username,
+                        'department_id' => 0,
+                        'department' => 'Other',
+                        'active' => 1,
+                    ];
+                }
+            }
+        }
+    }
+
+
     public function importData(Request $request)
     {
 
@@ -25,7 +95,7 @@ class ExcelImportController extends Controller
 
             if ($printer) {
                 Excel::import(new LogImport($printer), $file);
-                // Log::addLog(Session::get('loginId'), 'ImportExcel', $printer);
+                Log::addLog($request->session()->get('loginId'), 'ImportExcel', $printer);
 
                 return response()->json(['message' => 'Imported successfully'], 200);
             } else {
@@ -40,14 +110,15 @@ class ExcelImportController extends Controller
     {
         $currentYear = Carbon::now()->year;
 
-        $data = LogPrinter::with(['user_ref:code,name_eng,department_id', 'user_ref.dep_ref:id,name'])
-        ->select('id', 'jobtype', 'date', 'username', 'time',  'jobstatus', 'code_user', 'printername', 'jobnumber', 'total_color', 'total_bw')
+        $data = LogPrinter::select('id', 'jobtype', 'date', 'username', 'time',  'jobstatus', 'code_user', 'printername', 'jobnumber', 'total_color', 'total_bw')
             ->wherein('jobtype', ['Print', 'Copy'])
             ->whereYear('date', $currentYear)
             ->orderByDesc('id')
             ->take(300)->get();
 
-        return response()->json(['data' => $data],200);
+        $this->addApiDataToUser($data);
+
+        return response()->json(['data' => $data], 200);
     }
 
     public function getBarChartbyYear(Request $request)
@@ -89,14 +160,16 @@ class ExcelImportController extends Controller
         // เรียงข้อมูลตามเดือน
         $data = $data->sortBy('month')->values();
 
-        return response()->json(['data' => $data],200);
+        return response()->json(['data' => $data], 200);
     }
 
     public function getBarChartbyYearWithDep(Request $request)
     {
         $currentYear = Carbon::now()->year;
-        $query = LogPrinter::with(['user_ref:code,name_th,name_eng,department_id','user_ref.dep_ref:id,name'])
-            ->whereYear('date', $currentYear)->where('jobstatus', 'Done')->wherein('jobtype', ['Print', 'Copy']);
+        $query = LogPrinter::select('id', 'jobtype', 'date', 'username', 'time', 'jobstatus', 'code_user', 'printername', 'jobnumber', 'total_color', 'total_bw')
+            ->whereYear('date', $currentYear)
+            ->where('jobstatus', 'Done')
+            ->whereIn('jobtype', ['Print', 'Copy']);
 
         if ($request->has('printers')) {
             $printers = $request->printers;
@@ -104,29 +177,46 @@ class ExcelImportController extends Controller
         }
 
         $data = $query->get();
+        $this->addApiDataToUser($data);
+
         $data->each(function ($item) {
             $item->total = $item->total_color + $item->total_bw;
         });
 
-        $departmentSums = $data->groupBy('user_ref.department_id')->map(function ($items, $departmentId) {
-            $departmentName = $items->first()['user_ref']['dep_ref']['name'] ?? 'Other'; // ให้ค่าเป็น "-" ถ้า dep_ref มีค่าเป็น null
+
+        $departmentSums = $data->groupBy(function ($item) {
+            return $item->apiDataUser['department_id'] ?? 0; // Set to 0 if department_id is null
+        })->map(function ($items, $departmentId) {
+            $departmentName = $items->first()->apiDataUser['department'] ?? 'Other'; // Default to 'Other' if department is null
+
+            // Check for department_id = 0 or department_name = 'Other'
+            if ($departmentId == 0 || $departmentName == 'Other') {
+                $departmentId = 0;
+                $departmentName = 'Other';
+            }
+
             return [
                 'department_id' => $departmentId,
                 'department_name' => $departmentName,
                 'total_color' => $items->sum('total_color'),
                 'total_bw' => $items->sum('total_bw'),
-                'total' =>  $items->sum('total')
+                'total' => $items->sum('total'),
             ];
         })->values();
 
-        return response()->json(['data' => $departmentSums],200);
+        // Sort by total in descending order
+        $sortedDepartmentSums = $departmentSums->sortByDesc('total')->values();
 
+        return response()->json(['data' => $sortedDepartmentSums], 200);
     }
 
     public function getPieChartbyYearWithPrinter(Request $request)
     {
         $currentYear = Carbon::now()->year;
-        $query = LogPrinter::whereYear('date', $currentYear)->where('jobstatus', 'Done')->whereIn('jobtype', ['Print', 'Copy']);
+        $query = LogPrinter::select('id', 'jobtype', 'date', 'username', 'time',  'jobstatus', 'code_user', 'printername', 'jobnumber', 'total_color', 'total_bw')
+            ->whereYear('date', $currentYear)
+            ->where('jobstatus', 'Done')
+            ->whereIn('jobtype', ['Print', 'Copy']);
 
         // ตรวจสอบว่ามีการเลือก total_bw หรือ total_color หรือไม่
         $selectedColors = $request->colors ?? [];
@@ -161,14 +251,16 @@ class ExcelImportController extends Controller
 
         $data = $query->groupBy('printername')->get();
 
-        return response()->json(['data' => $data],200);
+        return response()->json(['data' => $data], 200);
     }
 
     public function getSimiDonutChartbyYearWithUser(Request $request)
     {
         $currentYear = Carbon::now()->year;
-        $query = LogPrinter::with(['user_ref:code,name_th,name_eng'])
-            ->whereYear('date', $currentYear)->where('jobstatus', 'Done')->wherein('jobtype', ['Print', 'Copy']);
+        $query = LogPrinter::select('id', 'jobtype', 'date', 'username', 'time', 'jobstatus', 'code_user', 'printername', 'jobnumber', 'total_color', 'total_bw')
+            ->whereYear('date', $currentYear)
+            ->where('jobstatus', 'Done')
+            ->whereIn('jobtype', ['Print', 'Copy']);
 
         if ($request->has('printers')) {
             $printers = $request->printers;
@@ -176,23 +268,27 @@ class ExcelImportController extends Controller
         }
 
         $data = $query->get();
+        $this->addApiDataToUser($data);
 
         $data->each(function ($item) {
             $item->total = $item->total_color + $item->total_bw;
         });
 
-        $UserSums = $data->groupBy('user_ref.code')->map(function ($items, $code) {
-            $UserName = $items->first()['user_ref']['name_eng'] ?? $items->first()['username']; // ให้ค่าเป็น "-" ถ้า user_ref มีค่าเป็น null
+        $userSums = $data->groupBy(function($item) {
+            return $item->apiDataUser['name_th'] ?? 'Other';
+        })->map(function ($items, $name) {
             return [
-                'code' => $code,
-                'user' => $UserName,
+                'name_th' => $name,
                 'total_color' => $items->sum('total_color'),
                 'total_bw' => $items->sum('total_bw'),
                 'total' => $items->sum('total')
             ];
-        })->sortByDesc('total')->take(10)->values();
+        });
 
-        return response()->json(['data' => $UserSums],200);
+        // Sort by total in descending order
+        $sortedUserSums = $userSums->sortByDesc('total')->take(10)->values();
+
+        return response()->json(['data' => $sortedUserSums], 200);
     }
 
     public function importQuota(Request $request)
@@ -200,8 +296,8 @@ class ExcelImportController extends Controller
         if ($request->hasFile('excel_file')) {
 
             $file = $request->file('excel_file');
-                Excel::import(new QuotaImport, $file);
-                return response()->json(['message' => 'Imported successfully'], 200);
+            Excel::import(new QuotaImport, $file);
+            return response()->json(['message' => 'Imported successfully'], 200);
         }
     }
 
@@ -210,9 +306,8 @@ class ExcelImportController extends Controller
 
 
         $data = Quota::with(['user_ref:code,name_eng,department_id', 'user_ref.dep_ref:id,name'])
-        ->select('name','code','department','total_color_24', 'total_bw_24', 'total_color_25', 'total_bw_25')->get();
+            ->select('name', 'code', 'department', 'total_color_24', 'total_bw_24', 'total_color_25', 'total_bw_25')->get();
 
-        return response()->json(['data' => $data],200);
+        return response()->json(['data' => $data], 200);
     }
-
 }

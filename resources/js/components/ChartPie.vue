@@ -150,7 +150,7 @@ function renderChart2(data) {
                 type: "pie",
                 innerSize: "50%",
                 data: data.map((item) => ({
-                    name: item.user,
+                    name: item.name_th,
                     y: parseInt(item.total),
                     total_color: parseInt(item.total_color),
                     total_bw: parseInt(item.total_bw),

@@ -157,7 +157,7 @@ function renderChart2(data) {
         yAxis: {
             min: 0,
             title: {
-                text: "normal",
+                text: "Total Usage",
             },
         },
         tooltip: {

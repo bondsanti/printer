@@ -23224,7 +23224,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         yAxis: {
           min: 0,
           title: {
-            text: "normal"
+            text: "Total Usage"
           }
         },
         tooltip: {
@@ -23572,7 +23572,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           innerSize: "50%",
           data: data.map(function (item) {
             return {
-              name: item.user,
+              name: item.name_th,
               y: parseInt(item.total),
               total_color: parseInt(item.total_color),
               total_bw: parseInt(item.total_bw) // total: parseInt(item.total),
@@ -23749,7 +23749,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 4:
                 response = _context2.sent;
                 isLoading.value = false;
-                items.value = response.data.data; //console.log(items.value );
+                items.value = response.data.data; //console.log(response);
 
                 _context2.next = 12;
                 break;
@@ -25886,7 +25886,7 @@ var _hoisted_12 = {
   "class": "card-header bg-info bg-gradient"
 };
 
-var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" ข้อมูล Log Printer ทั้งหมด ");
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" ข้อมูล Log Printer 300 รายการล่าสุด ");
 
 var _hoisted_14 = {
   key: 0,
@@ -26109,9 +26109,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     /* TEXT */
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_33, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.code_user), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_34, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.user_ref ? item.user_ref.dep_ref.name : "-"), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_34, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.apiDataUser ? item.apiDataUser.department : "-"), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_35, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.user_ref ? item.user_ref.name_eng : item.username), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_35, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.apiDataUser ? item.apiDataUser.name_th : "-"), 1
     /* TEXT */
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_36, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.total_color), 1
     /* TEXT */

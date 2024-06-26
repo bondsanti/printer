@@ -18,6 +18,7 @@ class UserController extends Controller
 
     public function getRole()
     {
+
         $isRole = Role_user::where('user_id', Session::get('loginId'))->first();
         return response()->json(['data' => $isRole],200);
     }
