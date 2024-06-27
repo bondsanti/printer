@@ -18,13 +18,13 @@ class QuotaImport implements ToModel, WithHeadingRow, WithChunkReading, WithBatc
     public function model(array $row)
     {
         //dd($row);
-        $existingRecord = Quota::where('code', $row['code'])->exists();
+        $existingRecord = Quota::where('code_user', $row['code'])->exists();
 
         if (!$existingRecord) {
             return new Quota([
                 'name' => $row['name'],
                 'department' => $row['department'],
-                'code' => $row['code'],
+                'code_user' => $row['code'],
                 'printername' => 'FujiEmpire',
                 'total_color_24' => $row['color_24'],
                 'total_bw_24' => $row['bw_24'],

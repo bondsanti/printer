@@ -86,7 +86,6 @@ onMounted(async () => {
         //console.log(response);
         isLoading.value = false;
         users.value = response.data.data;
-        //console.log(items.value);
     } catch (error) {
         console.log(error);
     }
@@ -319,6 +318,7 @@ async function fetchDataAndRenderChart3() {
             },
         });
         const data = response.data.data;
+
         renderChart3(data);
     } catch (error) {
         console.log("Error fetching data:", error);
@@ -331,17 +331,17 @@ function renderChart3(data) {
     }
 
     // เรียงลำดับข้อมูลตาม total
-    const sortedData = data.slice().sort((a, b) => b.total - a.total);
+    // const sortedData = data.slice().sort((a, b) => b.total - a.total);
 
-    const UserName = sortedData.map((item) => item.user);
-    const totalColors = sortedData.map((item) => parseInt(item.total_color));
-    const totalBW = sortedData.map((item) => parseInt(item.total_bw));
-    const total = sortedData.map((item) => parseInt(item.total));
+    // const UserName = sortedData.map((item) => item.name_th);
+    // const totalColors = sortedData.map((item) => parseInt(item.total_color));
+    // const totalBW = sortedData.map((item) => parseInt(item.total_bw));
+    // const total = sortedData.map((item) => parseInt(item.total));
 
-    // const UserName = data.map((item) => item.user);
-    // const totalColors = data.map((item) => parseInt(item.total_color));
-    // const totalBW = data.map((item) => parseInt(item.total_bw));
-    // const total = data.map((item) => parseInt(item.total));
+    const UserName = data.map((item) => item.name_th);
+    const totalColors = data.map((item) => parseInt(item.total_color));
+    const totalBW = data.map((item) => parseInt(item.total_bw));
+    const total = data.map((item) => parseInt(item.total));
 
     Highcharts3.chart("chart-bar-user-container", {
         chart: {
@@ -362,12 +362,12 @@ function renderChart3(data) {
         yAxis: {
             min: 0,
             title: {
-                text: "normal",
+                text: "Total Usage",
             },
         },
         tooltip: {
             pointFormat:
-                '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+                '<span style="color:{series.color}">{series.name_th}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
             shared: true,
         },
         plotOptions: {
@@ -410,17 +410,16 @@ async function filterDataBarDep() {
 async function filterDataBarUser() {
     await fetchDataAndRenderChart3();
 }
+
 async function submitForm() {
     try {
-
-            Swal.fire({
-                icon: "success",
-                title: "Success",
-                text: "Data loaded successfully.",
-                showConfirmButton: false,
-                timer: 1500,
-            });
-
+        Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Data loaded successfully.",
+            showConfirmButton: false,
+            timer: 1500,
+        });
     } catch (error) {
         Swal.fire({
             icon: "error",
@@ -437,6 +436,7 @@ async function submitForm() {
             },
         });
         items.value = response.data.data;
+        //console.log(items.value);
     } catch (error) {
         console.log(error);
     }
@@ -524,12 +524,27 @@ async function submitForm() {
         console.log(error);
     }
 }
+
+function exportTableToExcel() {
+    // Get the HTML table element
+    const table = document.getElementById("table");
+
+    // Convert the table to a worksheet
+    const worksheet = XLSX.utils.table_to_sheet(table);
+
+    const workbook = XLSX.utils.book_new();
+
+    // Add the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    // Export the workbook to an Excel file
+    XLSX.writeFile(workbook, "report.xlsx");
+}
 </script>
 
 <template>
     <div class="mt-3">
         <div class="row">
-
             <div class="col-12 col-md-6">
                 <div class="card">
                     <div class="card-body">
@@ -600,7 +615,7 @@ async function submitForm() {
                                         :key="user.code"
                                         :value="user.code"
                                     >
-                                        {{ user.user }}
+                                        {{ user.name_th }}
                                     </option>
                                 </select>
                             </div>
@@ -890,16 +905,31 @@ async function submitForm() {
                 <div class="card border-info">
                     <div class="card-header bg-info bg-gradient">
                         ตารางสรุปรายการใช้งานเครื่องพิมพ์
+
+                        <button
+                            @click="exportTableToExcel"
+                            type="button"
+                            class="btn btn-sm btn-warning"
+                            id="export-btn"
+                        >
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </button>
                     </div>
 
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-sm">
+                            <table
+                                class="table table-sm"
+                                ref="table"
+                                id="table"
+                            >
                                 <thead>
                                     <tr class="text-center">
                                         <th scope="col">แผนก</th>
                                         <th scope="col">รหัสพนักงาน</th>
                                         <th scope="col">ชื่อ-สกุล</th>
+                                        <th width="15%">โควต้า สี</th>
+                                        <th width="15%">โควต้า ขาวดำ</th>
                                         <th width="10%">สี</th>
                                         <th width="10%">ขาวดำ</th>
                                         <th width="10%">รวม</th>
@@ -907,7 +937,7 @@ async function submitForm() {
                                 </thead>
                                 <tbody v-if="isLoading">
                                     <tr>
-                                        <td colspan="7" class="text-center">
+                                        <td colspan="8" class="text-center">
                                             <loading></loading>
                                         </td>
                                     </tr>
@@ -915,7 +945,7 @@ async function submitForm() {
                                 <tbody v-if="!isLoading">
                                     <!-- แสดงข้อความ "No data available" ถ้าไม่มีข้อมูล -->
                                     <tr v-if="items.length === 0">
-                                        <td colspan="7" class="text-center">
+                                        <td colspan="8" class="text-center">
                                             No data available
                                         </td>
                                     </tr>
@@ -926,54 +956,78 @@ async function submitForm() {
                                     >
                                         <tr>
                                             <td
-                                                colspan=""
-                                                class="text-center"
+                                                colspan="8"
+                                                class="text-left"
                                                 style="
                                                     background-color: #bfdbfe;
                                                 "
                                             >
                                                 {{ department.department_name }}
                                             </td>
-                                            <td
-                                                colspan="5"
-                                                class="text-center"
-                                                style="
-                                                    background-color: #bfdbfe;
-                                                "
-                                            ></td>
                                         </tr>
                                         <!-- วนลูปผ่านผู้ใช้งานในแผนก -->
-                                        <tr
+                                        <template
                                             v-for="(
                                                 user, userIndex
                                             ) in department.users"
                                             :key="'user-' + userIndex"
                                         >
-                                            <td></td>
-                                            <td>{{ user.code }}</td>
-                                            <td>{{ user.name }}</td>
-                                            <td class="text-center">
-                                                {{ user.total_color }}
-                                            </td>
-                                            <td class="text-center">
-                                                {{ user.total_bw }}
-                                            </td>
-                                            <td class="text-center">
-                                                {{ user.total }}
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>{{ user.code }}</td>
+                                                <td>{{ user.name }}</td>
+                                                <td class="text-center">
+                                                    {{
+                                                        user.quota
+                                                            .total_color_24 ??
+                                                        "0"
+                                                    }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{
+                                                        user.quota
+                                                            .total_bw_24 ?? "0"
+                                                    }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{
+                                                        user.total_color ?? "0"
+                                                    }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ user.total_bw ?? "0" }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ user.total ?? "0" }}
+                                                </td>
+                                            </tr>
+                                        </template>
                                         <!-- แสดงผลรวมของแผนก -->
                                         <tr style="background-color: #93c5fd">
                                             <td colspan="3"></td>
-                                            <!-- <td class="text-right">Total department</td> -->
                                             <td class="text-center">
-                                                {{ department.total_color }}
+                                                {{
+                                                    department.total_color ??
+                                                    "0"
+                                                }}
                                             </td>
                                             <td class="text-center">
-                                                {{ department.total_bw }}
+                                                {{
+                                                    department.total_color ??
+                                                    "0"
+                                                }}
                                             </td>
                                             <td class="text-center">
-                                                {{ department.total }}
+                                                {{
+                                                    department.total_color ??
+                                                    "0"
+                                                }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ department.total_bw ?? "0" }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ department.total ?? "0" }}
                                             </td>
                                         </tr>
                                     </template>

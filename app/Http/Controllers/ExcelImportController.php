@@ -57,7 +57,7 @@ class ExcelImportController extends Controller
                         'code' => $userApiData['code'],
                         'name_th' => $userApiData['name_th'],
                         'department_id' => $userApiData['department_id'],
-                        'department' => $userApiData['department']?:"Other",
+                        'department' => $userApiData['department'] ?: "Other",
                         'active' => $userApiData['active'],
                     ] : [
                         'code' => $item->code_user,
@@ -274,7 +274,7 @@ class ExcelImportController extends Controller
             $item->total = $item->total_color + $item->total_bw;
         });
 
-        $userSums = $data->groupBy(function($item) {
+        $userSums = $data->groupBy(function ($item) {
             return $item->apiDataUser['name_th'] ?? 'Other';
         })->map(function ($items, $name) {
             return [
@@ -297,6 +297,7 @@ class ExcelImportController extends Controller
 
             $file = $request->file('excel_file');
             Excel::import(new QuotaImport, $file);
+            Log::addLog($request->session()->get('loginId'), 'ImportExcel', $file);
             return response()->json(['message' => 'Imported successfully'], 200);
         }
     }
@@ -305,8 +306,8 @@ class ExcelImportController extends Controller
     {
 
 
-        $data = Quota::with(['user_ref:code,name_eng,department_id', 'user_ref.dep_ref:id,name'])
-            ->select('name', 'code', 'department', 'total_color_24', 'total_bw_24', 'total_color_25', 'total_bw_25')->get();
+        $data = Quota::select('name', 'code_user', 'department', 'total_color_24', 'total_bw_24', 'total_color_25', 'total_bw_25')->get();
+        $this->addApiDataToUser($data);
 
         return response()->json(['data' => $data], 200);
     }

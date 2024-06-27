@@ -124,8 +124,8 @@ const uploadData = async () => {
                                         </th>
                                     </tr>
                                     <tr class="text-center">
-                                        <th scope="col" >สี</th>
-                                        <th scope="col" >ขาวดำ</th>
+                                        <th scope="col">สี</th>
+                                        <th scope="col">ขาวดำ</th>
                                         <th scope="col">สี</th>
                                         <th scope="col">ขาวดำ</th>
                                     </tr>
@@ -154,20 +154,20 @@ const uploadData = async () => {
                                         </td>
 
                                         <td class="text-center">
-                                            {{ item.code }}
+                                            {{ item.code_user }}
                                         </td>
                                         <td class="text-left">
                                             {{
-                                                item.user_ref
-                                                    ? item.user_ref.dep_ref.name
-                                                    : item.department
+                                                item.apiDataUser
+                                                    ? item.apiDataUser.department
+                                                    : "-"
                                             }}
                                         </td>
                                         <td class="text-left">
                                             {{
-                                                item.user_ref
-                                                    ? item.user_ref.name_eng
-                                                    : item.name
+                                                item.apiDataUser
+                                                    ? item.apiDataUser.name_th
+                                                    : "-"
                                             }}
                                         </td>
                                         <td class="text-center">

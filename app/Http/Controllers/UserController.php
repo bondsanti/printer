@@ -9,12 +9,79 @@ use App\Models\Log;
 use App\Models\Role_user;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\Translation\Provider\Dsn;
+use GuzzleHttp\Client;
+
 
 class UserController extends Controller
 {
 
+    private function addApiDataToUser($data)
+    {
+        if (!$data) {
+            return;
+        }
 
+        $client = new Client();
+        $url = env('API_URL');
+        $token = env('API_TOKEN_AUTH');
+
+        $userIds = $data->pluck('code_user')->toArray();
+        $userIdsString = implode(',', array_unique($userIds));
+
+        try {
+
+            $userResponse = $client->request('GET', $url . '/get-users/code/' . $userIdsString, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token
+                ]
+            ]);
+
+            if ($userResponse->getStatusCode() == 200) {
+                $userApiResponse = json_decode($userResponse->getBody()->getContents(), true);
+
+                if (isset($userApiResponse['data']['data'])) {
+                    $userData = $userApiResponse['data']['data'];
+                } else {
+                    $userData = [];
+                }
+            } else {
+                $userData = [];
+            }
+
+            foreach ($data as $item) {
+                $userApiData = collect($userData)->firstWhere('code', $item->code_user);
+
+                if (is_object($item)) {
+                    $item->apiDataUser = $userApiData ? [
+                        'code' => $userApiData['code'],
+                        'name_th' => $userApiData['name_th'],
+                        'department_id' => $userApiData['department_id'],
+                        'department' => $userApiData['department'] ?: "Other",
+                        'active' => $userApiData['active'],
+                    ] : [
+                        'code' => $item->code_user,
+                        'name_th' => $item->username,
+                        'department_id' => 0,
+                        'department' => 'Other',
+                        'active' => 1,
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            // Handle exception by setting apiDataUser to null for all items
+            foreach ($data as $item) {
+                if (is_object($item)) {
+                    $item->apiDataUser = [
+                        'code' => $item->code_user,
+                        'name_th' => $item->username,
+                        'department_id' => 0,
+                        'department' => 'Other',
+                        'active' => 1,
+                    ];
+                }
+            }
+        }
+    }
 
     public function getRole()
     {
