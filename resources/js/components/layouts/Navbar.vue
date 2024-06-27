@@ -88,16 +88,6 @@ const imagePath = "/img/vbe_old.png";
                         </li>
 
 
-                        <!-- <li class="nav-item" v-if="roleUser && roleUser.role_type === 'SuperAdmin'">
-                            <router-link
-                                to="/users"
-                                class="nav-link"
-                                aria-current="page"
-                                active-class="active"
-                                ><i class="fas fa-user"></i>
-                                ผู้ใช้งานระบบ </router-link
-                            >
-                        </li> -->
 
                     </ul>
                     <ul class="navbar-nav mb-2 mb-lg-0 justify-content-end">

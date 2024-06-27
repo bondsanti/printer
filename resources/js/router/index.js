@@ -15,11 +15,11 @@ const routes = [
         name: 'Report',
         component: Report
     },
-    {
-        path: '/users',
-        name: 'User',
-        component: User
-    },
+    // {
+    //     path: '/users',
+    //     name: 'User',
+    //     component: User
+    // },
     {
         path: '/quota',
         name: 'Quota',
