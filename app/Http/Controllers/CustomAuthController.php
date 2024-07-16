@@ -60,7 +60,7 @@ class CustomAuthController extends Controller
                             'username' => $user_hr->code,
                             'dates' => date('Y-m-d'),
                             'timeStm' => date('Y-m-d H:i:s'),
-                            'page' => 'ReportPrinter'
+                            'page' => 'reportprinter'
                         ]);
 
                         Log::addLog($request->session()->get('loginId'), 'Login', 'Login');
